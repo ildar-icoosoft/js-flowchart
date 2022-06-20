@@ -1,0 +1,7 @@
+.diagram-wrapper .node {
+  position: absolute;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.8);
+  vertical-align: middle;
+  border-radius: 5px;
+}
