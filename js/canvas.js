@@ -31,7 +31,7 @@ export class Canvas {
    */
   generateWrapper() {
     const temp = document.createElement('template');
-    temp.innerHTML = '<div class="diagram-wrapper"></div>';
+    temp.innerHTML = '<div class="flowchart"></div>';
     this.wrapper = temp.content.firstChild;
     this.root.append(this.wrapper);
   }

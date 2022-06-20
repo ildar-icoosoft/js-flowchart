@@ -23,7 +23,7 @@ export class BaseNode {
 
   draw(data) {
     const element = document.createElement('div');
-    element.classList.add('node');
+    element.classList.add('flowchart-node');
     element.setAttribute('id', data.id);
 
     if (data.top !== undefined) {

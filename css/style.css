@@ -1,7 +1,134 @@
-.diagram-wrapper .node {
+/* Reset CSS (begin) */
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol, ul {
+  list-style: none;
+}
+blockquote, q {
+  quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Reset CSS (end) */
+
+
+.flowchart {
+  width: 100%;
+  height: 100%;
+}
+.flowchart-node {
   position: absolute;
   text-align: center;
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--flowchart-theme-color);
   vertical-align: middle;
   border-radius: 5px;
+}
+.orange {
+  border-width: 1px;
+  border-color: #ef8b5b;
+  color: var(--flowchart-normal-font-color);
+  stroke: #ef8b5b;
+  line-height: 33px;
+}
+.green {
+  border-width: 1px;
+  border-color: #66cdc5;
+  color: var(--flowchart-normal-font-color);
+  stroke: #66cdc5;
+}
+.black {
+  border-width: 1px;
+  border-color: #8f8f8f;
+  color: var(--flowchart-normal-font-color);
+  stroke: #8f8f8f;
+}
+.purple {
+  border-width: 1px;
+  border-color: #776ef3;
+  color: var(--flowchart-normal-font-color);
+  stroke: #776ef3;
+}
+.circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+.diamond {
+  width:105px;
+  height:105px;
+  transform: rotate(45deg);
+}
+.diamond .rotate {
+  transform: rotate(-45deg);
+}
+
+.rect {
+  width:105px;
+  height:75px;
+}
+.dashed {
+  border-style: dashed;
+}
+.solid {
+  border-style: solid;
+}
+.text {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+.label {
+  position: absolute;
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #776ef3;
+  border-radius: 50%;
+  color: var(--flowchart-normal-font-color);
+  padding: 4px;
+  background: var(--flowchart-theme-color);
+  text-align: center;
 }
