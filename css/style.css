@@ -49,10 +49,11 @@ table {
 
 /* Reset CSS (end) */
 
-
 .flowchart {
+  position: relative;
   width: 100%;
   height: 100%;
+  z-index: 3;
 }
 .flowchart-node {
   position: absolute;
@@ -131,4 +132,41 @@ table {
   padding: 4px;
   background: var(--flowchart-theme-color);
   text-align: center;
+}
+
+
+
+/* link*/
+.flowchart-link {
+  fill: none;
+  stroke:  #BFBFBF;
+  stroke-width: 1px;
+}
+.flowchart-link:hover {
+  stroke: #F66902;
+}
+.flowchart-label {
+  position: absolute;
+}
+.flowchart-arrow {
+  fill:  #BFBFBF;
+  stroke:  #BFBFBF;
+  stroke-width: 1px;
+}
+.flowchart-arrow:hover {
+  fill: #F66902;
+  stroke: #F66902;
+}
+
+.flowchart-link-event-handler {
+  stroke-width: 12px;
+  fill: none;
+  stroke: rgba(0,0,0,0);
+}
+
+.flowchart-svg {
+  display: block;
+  position: relative;
+  pointer-events: auto!important;
+  overflow: visible!important;
 }
