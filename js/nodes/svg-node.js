@@ -5,7 +5,7 @@ import {BaseNode} from "./base-node.js";
 export class SvgNode extends BaseNode {
   /**
    * @param options
-   * @param {SvgCanvas} canvas
+   * @param {SvgDiagram} canvas
    */
   constructor(options, canvas) {
     super(options);
@@ -20,10 +20,13 @@ export class SvgNode extends BaseNode {
 
     element.style.top = `${this.top}px`;
     element.style.left = `${this.left}px`;
+    element.style.width = `${this.width}px`;
+    element.style.height = `${this.height}px`;
 
     element.classList.add(this.shape);
-    element.classList.add('black');
-    element.classList.add('solid');
+
+    element.classList.add(this.color);
+    element.classList.add(this.border);
 
     const textSpan = document.createElement('span');
     textSpan.classList.add('text');

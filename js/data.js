@@ -8,7 +8,9 @@ export default {
     left: 510,
     width: 100,
     height: 60,
+    color: 'orange',
     shape: 'circle',
+    border: 'dashed',
     endpoints: [{
       id: 'top',
       orientation: [0, -1],
@@ -33,7 +35,26 @@ export default {
     left: 500,
     width: 100,
     height: 60,
+    color: 'purple',
     shape: 'diamond',
+    border: 'solid',
+    endpoints: [{
+      id: 'top',
+      orientation: [0, -1],
+      pos: [0.5, 0]
+    }, {
+      id: 'right',
+      orientation: [1, 0],
+      pos: [0, 0.5]
+    }, {
+      id: 'bottom',
+      orientation: [0, 1],
+      pos: [0.5, 0]
+    }, {
+      id: 'left',
+      orientation: [-1, 0],
+      pos: [0, 0.5]
+    }]
   }, {
     id: '2',
     text: 'Employees manually activates alarm',
@@ -41,7 +62,9 @@ export default {
     left: 250,
     width: 100,
     height: 60,
+    color: 'green',
     shape: 'rect',
+    border: 'solid',
     endpoints: [{
       id: 'top',
       orientation: [0, -1],
@@ -61,16 +84,18 @@ export default {
     }]
   }],
   edges: [{
-    source: 'bottom',
-    target: 'top',
+    sourceEndpoint: 'bottom',
+    targetEndpoint: 'top',
     sourceNode: '0',
     targetNode: '1',
+    color: 'black',
   }, {
-    source: 'left',
-    target: 'right',
+    sourceEndpoint: 'left',
+    targetEndpoint: 'right',
     sourceNode: '1',
     targetNode: '2',
     label: 'no',
+    color: 'black',
   }],
 };
 
