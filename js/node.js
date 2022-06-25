@@ -22,20 +22,18 @@ export class Node {
     element.classList.add('flowchart-node');
     element.setAttribute('id', this.id);
 
-
-
     if (this.shape === 'diamond') {
       const halfWidth = this.width / 2;
       const diamondWidth = Math.sqrt(2 * halfWidth * halfWidth);
 
-      element.style.width = `${diamondWidth}px`;
-      element.style.height = `${diamondWidth}px`;
+      element.style.width = `${diamondWidth - 2}px`;
+      element.style.height = `${diamondWidth - 2}px`;
 
       element.style.top = `${this.top + (this.width - diamondWidth) / 2}px`;
       element.style.left = `${this.left + (this.width - diamondWidth) / 2}px`;
     } else {
-      element.style.width = `${this.width}px`;
-      element.style.height = `${this.height}px`;
+      element.style.width = `${this.width - 2}px`;
+      element.style.height = `${this.height - 2}px`;
 
       element.style.top = `${this.top}px`;
       element.style.left = `${this.left}px`;

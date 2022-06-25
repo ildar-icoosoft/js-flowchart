@@ -2,6 +2,7 @@
 
 import * as DrawUtil from './utils/link';
 import ArrowUtil from './utils/arrow.js';
+import {getEndpointCoordinates} from "./utils/endpoint.js";
 
 export class Edge {
   /**
@@ -88,27 +89,9 @@ export class Edge {
     return dom;
   }
 
-  getEndpointCoordinates(node, endpoint) {
-    let x;
-    if (endpoint.orientation[0] === 1) {
-      x = node.left + node.width - endpoint.pos[0] * node.width;
-    } else {
-      x = node.left + endpoint.pos[0] * node.width;
-    }
-
-    let y;
-    if (endpoint.orientation[1] === 1) {
-      y = node.top + node.height - endpoint.pos[1] * node.height;
-    } else {
-      y = node.top + endpoint.pos[1] * node.height;
-    }
-
-    return [x, y]
-  }
-
   calcPath() {
-    const sourceEndpointCoordinates = this.getEndpointCoordinates(this.sourceNode, this.sourceEndpoint);
-    const targetEndpointCoordinates = this.getEndpointCoordinates(this.targetNode, this.targetEndpoint);
+    const sourceEndpointCoordinates = getEndpointCoordinates(this.sourceNode, this.sourceEndpoint);
+    const targetEndpointCoordinates = getEndpointCoordinates(this.targetNode, this.targetEndpoint);
 
     const sourcePoint = {
       pos: sourceEndpointCoordinates,

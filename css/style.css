@@ -173,3 +173,20 @@ table {
   width: 2px;
   height: 2px;
 }
+
+
+.flowchart-circle-endpoint {
+  position: absolute;
+  z-index: 100;
+  width: 6px;
+  height: 6px;
+  border: 1px solid #999;
+  border-radius: 50%;
+  background: #fff;
+}
+.flowchart-circle-endpoint.linkable {
+ background: green;
+}
+.flowchart-circle-endpoint.hover {
+ background: orange;
+}
