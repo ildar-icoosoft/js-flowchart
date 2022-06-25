@@ -1,9 +1,9 @@
 import mockData from './data.js';
-import {SvgDiagram} from "./diagram/svg-diagraam.js";
+import {Diagram} from "./diagram.js";
 
 window.addEventListener('DOMContentLoaded', () => {
   let root = document.getElementById('flowchart-container');
-  const diagram = new SvgDiagram({
+  const diagram = new Diagram({
     root,
     nodes: mockData.nodes,
     edges: mockData.edges

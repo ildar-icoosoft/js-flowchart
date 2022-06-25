@@ -1,24 +1,27 @@
 'use strict';
 
-import {BaseEdge} from "./base-edge.js";
-import * as DrawUtil from '../utils/link';
+import * as DrawUtil from './utils/link';
 
-export class SvgEdge extends BaseEdge {
+export class Edge {
   /**
    * @param options
    */
   constructor(options) {
-    super(options);
+    this.sourceEndpoint = options.sourceEndpoint;
+    this.targetEndpoint = options.targetEndpoint;
+    this.sourceNode = options.sourceNode;
+    this.targetNode = options.targetNode;
+    this.color = options.color;
   }
 
   draw() {
-    let path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-    path.classList.add('flowchart-link', this.color);
+    let el = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+    el.classList.add('flowchart-link', this.color);
 
-    const pathAttr = this.calcPath();
-    path.setAttribute('d', pathAttr);
+    const path = this.calcPath();
+    el.setAttribute('d', path);
 
-    return path;
+    return el;
   }
 
   getEndpointCoordinates(node, endpoint) {

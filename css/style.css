@@ -169,4 +169,7 @@ table {
   position: relative;
   pointer-events: auto!important;
   overflow: visible!important;
+  z-index: 499;
+  width: 2px;
+  height: 2px;
 }
