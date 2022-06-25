@@ -22,6 +22,7 @@ export class Endpoint {
     el.style.left = `${Math.floor(coordinates[0]) - this.width / 2}px`;
     el.style.top = `${Math.floor(coordinates[1]) - this.height / 2}px`;
 
+    // 2px - толщина border. Нужно будет избавиться от этого костыля
     el.style.width = `${this.width - 2}px`;
     el.style.height = `${this.height - 2}px`;
 

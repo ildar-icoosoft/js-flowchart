@@ -14,7 +14,6 @@ export class Edge {
     this.sourceNode = options.sourceNode;
     this.targetNode = options.targetNode;
     this.color = options.color;
-    this.shapeType = options.shapeType ?? 'Manhattan';
     this.arrowShapeType = options.arrowShapeType ?? 'default';
     this.arrowPosition = options.arrowPosition ?? 0.5;
     this.arrowOffset = options.arrowOffset ?? 0;
@@ -52,9 +51,6 @@ export class Edge {
       let arrowFinalPosition = 1;
       if (1 - arrowFinalPosition < ArrowUtil.ARROW_TYPE.length / length) {
         arrowFinalPosition = (length * arrowFinalPosition - ArrowUtil.ARROW_TYPE.length) / length;
-      }
-      if (this.shapeType === 'Bezier') {
-        arrowFinalPosition = 1 - arrowFinalPosition;
       }
 
       let point = lineDom.getPointAtLength(length * arrowFinalPosition);
@@ -103,30 +99,16 @@ export class Edge {
       orientation: this.targetEndpoint.orientation
     };
 
-    let path = '';
-    if (this.shapeType === 'Bezier') {
-      path = DrawUtil.drawBezier(sourcePoint, targetPoint);
-    } else if (this.shapeType === 'Straight') {
-      path = DrawUtil.drawStraight(sourcePoint, targetPoint);
-    } else if (this.shapeType === 'Flow') {
-      path = DrawUtil.drawFlow(sourcePoint, targetPoint);
-    } else if (this.shapeType === 'Manhattan') {
-      let obj = DrawUtil.drawManhattan(sourcePoint, targetPoint, {
-        breakPoints: [],
-        hasDragged: false,
-        draggable: true,
-        hasRadius: false
-      });
-      path = obj.path;
-      obj.breakPoints[0].type = 'start';
-      obj.breakPoints[obj.breakPoints.length - 1].type = 'end';
-    } else if (this.shapeType === 'AdvancedBezier') {
-      path = DrawUtil.drawAdvancedBezier(sourcePoint, targetPoint);
-    } else if (/^Bezier2-[1-3]$/.test(this.shapeType)) {
-      path = DrawUtil.drawSecondBezier(sourcePoint, targetPoint, this.shapeType);
-    } else if(this.shapeType === 'BrokenLine'){
-      path = DrawUtil.drawBrokenLine(sourcePoint, targetPoint);
-    }
+    const obj = DrawUtil.drawManhattan(sourcePoint, targetPoint, {
+      breakPoints: [],
+      hasDragged: false,
+      draggable: true,
+      hasRadius: false
+    });
+
+    const path = obj.path;
+    obj.breakPoints[0].type = 'start';
+    obj.breakPoints[obj.breakPoints.length - 1].type = 'end';
 
     return path;
   }
