@@ -12,6 +12,7 @@ export class Edge {
     this.sourceNode = options.sourceNode;
     this.targetNode = options.targetNode;
     this.color = options.color;
+    this.shapeType = options.shapeType ?? 'Manhattan';
   }
 
   draw() {
@@ -56,6 +57,31 @@ export class Edge {
       orientation: this.targetEndpoint.orientation
     };
 
-    return DrawUtil.drawStraight(sourcePoint, targetPoint);
+    let path = '';
+    if (this.shapeType === 'Bezier') {
+      path = DrawUtil.drawBezier(sourcePoint, targetPoint);
+    } else if (this.shapeType === 'Straight') {
+      path = DrawUtil.drawStraight(sourcePoint, targetPoint);
+    } else if (this.shapeType === 'Flow') {
+      path = DrawUtil.drawFlow(sourcePoint, targetPoint);
+    } else if (this.shapeType === 'Manhattan') {
+      let obj = DrawUtil.drawManhattan(sourcePoint, targetPoint, {
+        breakPoints: [],
+        hasDragged: false,
+        draggable: true,
+        hasRadius: false
+      });
+      path = obj.path;
+      obj.breakPoints[0].type = 'start';
+      obj.breakPoints[obj.breakPoints.length - 1].type = 'end';
+    } else if (this.shapeType === 'AdvancedBezier') {
+      path = DrawUtil.drawAdvancedBezier(sourcePoint, targetPoint);
+    } else if (/^Bezier2-[1-3]$/.test(this.shapeType)) {
+      path = DrawUtil.drawSecondBezier(sourcePoint, targetPoint, this.shapeType);
+    } else if(this.shapeType === 'BrokenLine'){
+      path = DrawUtil.drawBrokenLine(sourcePoint, targetPoint);
+    }
+
+    return path;
   }
 }
