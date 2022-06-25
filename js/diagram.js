@@ -45,7 +45,14 @@ export class Diagram {
     this.root.append(this.dom);
 
     this.nodes.map(node => node.draw()).forEach(nodeDom => this.dom.append(nodeDom));
-    this.edges.map(edge => edge.draw()).forEach(edgeDom => this.svg.append(edgeDom));
+
+    this.edges.forEach(edge => {
+      const lineDom = edge.drawLine();
+      this.svg.append(lineDom);
+
+      const arrowDom = edge.drawArrow(lineDom);
+      this.svg.append(arrowDom)
+    });
   }
 
   /**
