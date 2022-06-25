@@ -1,16 +1,20 @@
 'use strict';
 
-import {BaseNode} from "./base-node.js";
-
-export class SvgNode extends BaseNode {
+export class Node {
   /**
    * @param options
-   * @param {SvgDiagram} canvas
    */
-  constructor(options, canvas) {
-    super(options);
-
-    this.canvas = canvas;
+  constructor(options) {
+    this.id = options.id;
+    this.left = options.left;
+    this.top = options.top;
+    this.width = options.width;
+    this.height = options.height;
+    this.shape = options.shape;
+    this.color = options.color;
+    this.border = options.border;
+    this.text = options.text;
+    this.endpoints = options.endpoints;
   }
 
   draw() {
@@ -37,6 +41,6 @@ export class SvgNode extends BaseNode {
 
     element.append(textSpan);
 
-    this.canvas.dom.append(element);
+    return element;
   }
 }
