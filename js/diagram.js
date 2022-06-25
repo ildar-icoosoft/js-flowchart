@@ -8,10 +8,10 @@ export class Diagram {
     this.nodes = options.nodes ? options.nodes.map(nodeOptions => this.createNode(nodeOptions)) : [];
     this.edges = options.edges ? options.edges.map(edgeOptions => this.createEdge(edgeOptions)) : [];
 
-    this.dom = this.generateWrapper();
+    this.wrapper = this.generateWrapper();
     this.svg = this.generateSvgWrapper();
 
-    this.dom.append(this.svg);
+    this.wrapper.append(this.svg);
   }
 
   createEndpoint(options) {
@@ -42,9 +42,17 @@ export class Diagram {
   }
 
   draw() {
-    this.root.append(this.dom);
+    this.root.append(this.wrapper);
 
-    this.nodes.map(node => node.draw()).forEach(nodeDom => this.dom.append(nodeDom));
+    this.nodes.forEach(node => {
+      const nodeDom = node.draw();
+      this.wrapper.append(nodeDom);
+
+      node.endpoints.forEach(endpoint => {
+        const endpointDom = endpoint.draw(node);
+        this.wrapper.append(endpointDom);
+      });
+    });
 
     this.edges.forEach(edge => {
       const lineDom = edge.drawLine();
