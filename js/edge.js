@@ -1,6 +1,7 @@
 'use strict';
 
 import * as DrawUtil from './utils/link';
+import ArrowUtil from './utils/arrow.js';
 
 export class Edge {
   /**
@@ -13,9 +14,12 @@ export class Edge {
     this.targetNode = options.targetNode;
     this.color = options.color;
     this.shapeType = options.shapeType ?? 'Manhattan';
+    this.arrowShapeType = options.arrowShapeType ?? 'default';
+    this.arrowPosition = options.arrowPosition ?? 0.5;
+    this.arrowOffset = options.arrowOffset ?? 0;
   }
 
-  draw() {
+  drawLine() {
     let el = document.createElementNS('http://www.w3.org/2000/svg', 'path')
     el.classList.add('flowchart-link', this.color);
 
@@ -23,6 +27,65 @@ export class Edge {
     el.setAttribute('d', path);
 
     return el;
+  }
+
+  drawArrow(lineDom) {
+    let arrowObj = ArrowUtil.ARROW_TYPE[this.arrowShapeType];
+    let arrowWidth = arrowObj.width || 8;
+    let arrowHeight = arrowObj.height || 8;
+    let dom = undefined;
+    if (arrowObj.type === 'pathString') {
+      dom = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    } else if (arrowObj.type === 'svg') {
+      dom = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+      dom.setAttribute('href', arrowObj.content);
+      dom.setAttribute('width', `${arrowWidth}px`);
+      dom.setAttribute('height', `${arrowHeight}px`);
+    }
+    dom.setAttribute('class', 'flowchart-arrow');
+
+    const linePath = lineDom.getAttribute('d');
+
+    const length = lineDom.getTotalLength();
+    if (length) {
+      let arrowFinalPosition = 1;
+      if (1 - arrowFinalPosition < ArrowUtil.ARROW_TYPE.length / length) {
+        arrowFinalPosition = (length * arrowFinalPosition - ArrowUtil.ARROW_TYPE.length) / length;
+      }
+      if (this.shapeType === 'Bezier') {
+        arrowFinalPosition = 1 - arrowFinalPosition;
+      }
+
+      let point = lineDom.getPointAtLength(length * arrowFinalPosition);
+      let x = point.x;
+      let y = point.y;
+      let _x = x;
+      let _y = y;
+
+      let vector = ArrowUtil.calcSlope({
+        shapeType: this.shapeType,
+        dom: lineDom,
+        arrowPosition: arrowFinalPosition,
+        path: linePath
+      });
+      let deg = Math.atan2(vector.y, vector.x) / Math.PI * 180;
+      let arrowObj = ArrowUtil.ARROW_TYPE[this.arrowShapeType];
+      let arrowWidth = arrowObj.width || 8;
+      let arrowHeight = arrowObj.height || 8;
+      if (arrowObj.type === 'pathString') {
+        dom.setAttribute('d', arrowObj.content);
+      } else if (arrowObj.type === 'svg') {
+        if (vector.x === 0) {
+          _y -= arrowHeight / 2;
+        } else {
+          _x -= arrowWidth / 2;
+          _y -= arrowHeight / 2;
+        }
+      }
+      dom.setAttribute('transform', `rotate(${deg}, ${x}, ${y})translate(${_x}, ${_y})`);
+    }
+
+    return dom;
   }
 
   getEndpointCoordinates(node, endpoint) {
