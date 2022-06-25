@@ -13,10 +13,13 @@ export class Edge {
     this.targetEndpoint = options.targetEndpoint;
     this.sourceNode = options.sourceNode;
     this.targetNode = options.targetNode;
+    this.label = options.label;
     this.color = options.color;
     this.arrowShapeType = options.arrowShapeType ?? 'default';
     this.arrowPosition = options.arrowPosition ?? 0.5;
     this.arrowOffset = options.arrowOffset ?? 0;
+    this.labelPosition = options.labelPosition ?? 0.5;
+    this.labelOffset = options.labelOffset ?? 0;
   }
 
   drawLine() {
@@ -27,6 +30,26 @@ export class Edge {
     el.setAttribute('d', path);
 
     return el;
+  }
+
+  drawLabel() {
+    let dom = document.createElement('span');
+    dom.className = 'flowchart-label';
+    dom.innerText = this.label;
+
+    return dom;
+  }
+
+  redrawLabel(lineDom, labelDom) {
+    const length = lineDom.getTotalLength();
+    if(!length) {
+      return;
+    }
+    let labelLength = length * this.labelPosition + this.labelOffset;
+    let point = lineDom.getPointAtLength(labelLength);
+
+    labelDom.style.left = `${point.x - labelDom.offsetWidth / 2}px`;
+    labelDom.style.top = `${point.y - labelDom.offsetHeight / 2}px`;
   }
 
   drawArrow(lineDom) {
@@ -48,7 +71,14 @@ export class Edge {
 
     const length = lineDom.getTotalLength();
     if (length) {
-      let arrowFinalPosition = 1;
+      let arrowFinalPosition = (length * this.arrowPosition + this.arrowOffset) / length;
+
+      if (arrowFinalPosition > 1) {
+        arrowFinalPosition = 1;
+      }
+      if (arrowFinalPosition < 0) {
+        arrowFinalPosition = 0;
+      }
       if (1 - arrowFinalPosition < ArrowUtil.ARROW_TYPE.length / length) {
         arrowFinalPosition = (length * arrowFinalPosition - ArrowUtil.ARROW_TYPE.length) / length;
       }
@@ -60,7 +90,6 @@ export class Edge {
       let _y = y;
 
       let vector = ArrowUtil.calcSlope({
-        shapeType: this.shapeType,
         dom: lineDom,
         arrowPosition: arrowFinalPosition,
         path: linePath
