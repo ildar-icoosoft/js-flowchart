@@ -13,66 +13,27 @@ let ARROW_TYPE = {
 };
 
 function calcSlope(opts) {
-  let shapeType = opts.shapeType;
-  let dom = opts.dom;
-  let arrowPosition = opts.arrowPosition ?? 0.5;
-  let path = opts.path;
-  let coordinates = path.split(' ');
-  let x = 0;
-  let y = 0;
+  const dom = opts.dom;
+  const arrowPosition = opts.arrowPosition ?? 0.5;
 
-  if (shapeType === 'BezierTest' || shapeType === 'AdvancedBezierTest') {
-    let p0 = {x: coordinates[8], y: coordinates[9]};
-    let p1 = {x: coordinates[1], y: coordinates[2]};
+  let p0;
+  let p1;
 
-    if (arrowPosition !== 1) {
-      p0 = dom.getPointAtLength(dom.getTotalLength() * arrowPosition + 0.001);
-      p1 = dom.getPointAtLength(dom.getTotalLength() * arrowPosition);
-    } else {
-      p0 = dom.getPointAtLength(dom.getTotalLength() * arrowPosition);
-      p1 = dom.getPointAtLength(dom.getTotalLength() * arrowPosition - 0.001);
-    }
-
-    x = p1.x - p0.x;
-    y = p1.y - p0.y;
-  } else if (shapeType === 'Straight') {
-    let p0 = {x: coordinates[1], y: coordinates[2]};
-    let p1 = {x: coordinates[4], y: coordinates[5]};
-
-    x = p1.x - p0.x;
-    y = p1.y - p0.y;
+  if (arrowPosition !== 1) {
+    p0 = dom.getPointAtLength(dom.getTotalLength() * arrowPosition);
+    p1 = dom.getPointAtLength(dom.getTotalLength() * arrowPosition + 0.001);
   } else {
-    let p0 = 0;
-    let p1 = 1;
-
-    if (arrowPosition !== 1) {
-      p0 = dom.getPointAtLength(dom.getTotalLength() * arrowPosition);
-      p1 = dom.getPointAtLength(dom.getTotalLength() * arrowPosition + 0.001);
-    } else {
-      p0 = dom.getPointAtLength(dom.getTotalLength() * arrowPosition - 0.001);
-      p1 = dom.getPointAtLength(dom.getTotalLength() * arrowPosition);
-    }
-
-    x = p1.x - p0.x;
-    y = p1.y - p0.y;
+    p0 = dom.getPointAtLength(dom.getTotalLength() * arrowPosition - 0.001);
+    p1 = dom.getPointAtLength(dom.getTotalLength() * arrowPosition);
   }
 
-  return {x, y};
-}
+  const x = p1.x - p0.x;
+  const y = p1.y - p0.y;
 
-const registerArrow = (arrows) => {
-  arrows.forEach((item) => {
-    ARROW_TYPE[item.key] = {
-      type: item.type,
-      content: item.content,
-      width: item.width,
-      height: item.height
-    }
-  });
+  return {x, y};
 }
 
 export default {
   calcSlope,
   ARROW_TYPE,
-  registerArrow
 };

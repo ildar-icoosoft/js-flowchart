@@ -18,7 +18,7 @@ const getDefaultPath = (pointArr) => {
   ]).join(' ');
   return path
 };
-// 获得靠近end的点
+
 const getThatPoint = (start, end, radius) => {
   let p = new Point();
 
@@ -36,6 +36,7 @@ const getThatPoint = (start, end, radius) => {
 
   return p;
 };
+
 const getDrawPoint = (start, control, end, radius) => {
   let p1 = getThatPoint(start, control, radius);
   let p2 = getThatPoint(end, control, radius);
@@ -45,7 +46,6 @@ const getDrawPoint = (start, control, end, radius) => {
     (start.y + end.y) / 2
   );
 
-  // 逆时针
   if (control.y < center.y) {
     flag = 1;
   }
@@ -58,6 +58,7 @@ const getDrawPoint = (start, control, end, radius) => {
 
   return [start, p1, p2, flag];
 };
+
 function getRadiusPath(pointArr) {
   let path = ""
   let radius = DEFAULT_RADIUS;
@@ -145,8 +146,7 @@ function drawManhattan(sourcePoint, targetPoint, options) {
     '0-1': TOP,
     '01': BOTTOM,
   };
-  ;
-  // link:connect 中 orientation = undefined
+
   _route(pointArr, fromPt, orientation[sourcePoint.orientation.join('')], toPt, orientation[targetPoint.orientation.join('')]);
   if (pointArr.length < 2) return '';
   if (pointArr.length === 2) {

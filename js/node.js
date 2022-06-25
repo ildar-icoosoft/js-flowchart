@@ -26,6 +26,7 @@ export class Node {
       const halfWidth = this.width / 2;
       const diamondWidth = Math.sqrt(2 * halfWidth * halfWidth);
 
+      // 2px - толщина border. Нужно будет избавиться от этого костыля
       element.style.width = `${diamondWidth - 2}px`;
       element.style.height = `${diamondWidth - 2}px`;
 
