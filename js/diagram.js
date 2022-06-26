@@ -1,6 +1,9 @@
 import {Endpoint} from "./endpoint.js";
 import {Edge} from "./edge.js";
 import {Node} from "./node.js";
+import {findEndpointByCoordinates} from "./utils/endpoint.js";
+
+// @todo отрефакторить код
 
 export class Diagram {
   constructor(options) {
@@ -15,6 +18,7 @@ export class Diagram {
 
     this.selectedNode = null;
     this.movingNode = null;
+    this.movingEdge = null;
   }
 
   createEndpoint(options) {
@@ -84,6 +88,8 @@ export class Diagram {
    * private
    */
   addEventListeners() {
+    window.addEventListener('selectstart', (e) => e.preventDefault());
+
     window.addEventListener('mousedown', () => {
       if (this.selectedNode) {
         this.selectedNode.selected = false;
@@ -117,6 +123,56 @@ export class Diagram {
       this.movingNode = null;
     });
 
+    window.addEventListener('mousemove', (event) => {
+      if (this.movingEdge) {
+        this.movingEdge.targetCoordinates = [
+          event.clientX,
+          event.clientY
+        ];
+        this.movingEdge.targetNode = null;
+        this.movingEdge.targetEndpoint = null;
+
+        this.movingEdge.redrawLine();
+        this.movingEdge.redrawArrow();
+        if (this.movingEdge.label) {
+          this.movingEdge.redrawLabel();
+        }
+      }
+    });
+
+    window.addEventListener('mouseup', (event) => {
+      if (this.movingEdge) {
+        if (this.movingEdge.targetEndpoint) {
+          this.movingEdge = null;
+          return;
+        }
+
+        const targetEndpoint = findEndpointByCoordinates(this.nodes, this.movingEdge.targetCoordinates);
+
+        if (targetEndpoint && this.movingEdge.sourceEndpoint !== targetEndpoint) {
+          this.movingEdge.targetCoordinates = null;
+          this.movingEdge.targetNode = targetEndpoint.node;
+          this.movingEdge.targetEndpoint = targetEndpoint.endpoint;
+
+          this.movingEdge.redrawLine();
+          this.movingEdge.redrawArrow();
+          if (this.movingEdge.label) {
+            this.movingEdge.redrawLabel();
+          }
+        } else {
+          this.edges = this.edges.filter(edge => edge !== this.movingEdge);
+
+          this.svg.removeChild(this.movingEdge.lineDom);
+          this.svg.removeChild(this.movingEdge.arrowDom);
+          if (this.movingEdge.label) {
+            this.wrapper.removeChild(this.movingEdge.labelDom);
+          }
+        }
+
+        this.movingEdge = null;
+      }
+    });
+
     window.addEventListener('keydown', (event) => {
       if (event.code === 'Delete' && this.selectedNode) {
         this.selectedNode.endpoints.forEach(endpoint => {
@@ -142,6 +198,55 @@ export class Diagram {
     });
 
     this.nodes.forEach(node => {
+      node.endpoints.forEach(endpoint => {
+        endpoint.dom.addEventListener('mousedown', (event) => {
+          const LEFT_KEY = 0;
+          if (event.button !== LEFT_KEY) {
+            return;
+          }
+
+          event.stopPropagation();
+
+          let edge = this.edges.find(edgeItem => edgeItem.targetEndpoint === endpoint || edgeItem.sourceEndpoint === endpoint);
+          if (edge && edge.sourceEndpoint === endpoint) {
+            return;
+          }
+          if (!edge) {
+            edge = new Edge({
+              color: 'green',
+              type: 'endpoint',
+              arrow: true,
+              arrowPosition: 1,
+              sourceNode: node,
+              sourceEndpoint: endpoint,
+              targetNode: null,
+              targetEndpoint: null,
+              targetCoordinates: [event.clientX, event.clientY]
+            });
+            this.edges.push(edge);
+
+            const lineDom = edge.drawLine();
+            this.svg.append(lineDom);
+            edge.redrawLine();
+
+            const arrowDom = edge.drawArrow(lineDom);
+            this.svg.append(arrowDom);
+            edge.redrawArrow();
+
+            if (edge.label) {
+              const labelDom = edge.drawLabel(lineDom);
+              this.wrapper.append(labelDom);
+
+              edge.redrawLabel();
+            }
+          }
+
+          if (edge) {
+            this.movingEdge = edge;
+          }
+        });
+      });
+
       node.dom.addEventListener('mousedown', (event) => {
         const LEFT_KEY = 0;
         if (event.button !== LEFT_KEY) {

@@ -157,17 +157,14 @@ table {
 
 .flowchart-circle-endpoint {
   position: absolute;
-  z-index: 100;
+  z-index: 501;
   width: 6px;
   height: 6px;
   border: 1px solid #999;
   border-radius: 50%;
   background: #fff;
 }
-.flowchart-circle-endpoint.linkable {
- background: green;
-}
-.flowchart-circle-endpoint.hover {
+.flowchart-circle-endpoint:hover {
  background: orange;
 }
 
