@@ -35,9 +35,9 @@ export class Edge {
     return el;
   }
 
-  redrawLine(el) {
+  redrawLine() {
     const path = this.calcPath();
-    el.setAttribute('d', path);
+    this.lineDom.setAttribute('d', path);
   }
 
   drawLabel() {
@@ -50,16 +50,16 @@ export class Edge {
     return dom;
   }
 
-  redrawLabel(lineDom, labelDom) {
-    const length = lineDom.getTotalLength();
+  redrawLabel() {
+    const length = this.lineDom.getTotalLength();
     if(!length) {
       return;
     }
     let labelLength = length * this.labelPosition + this.labelOffset;
-    let point = lineDom.getPointAtLength(labelLength);
+    let point = this.lineDom.getPointAtLength(labelLength);
 
-    labelDom.style.left = `${point.x - labelDom.offsetWidth / 2}px`;
-    labelDom.style.top = `${point.y - labelDom.offsetHeight / 2}px`;
+    this.labelDom.style.left = `${point.x - this.labelDom.offsetWidth / 2}px`;
+    this.labelDom.style.top = `${point.y - this.labelDom.offsetHeight / 2}px`;
   }
 
   drawArrow() {
@@ -71,10 +71,10 @@ export class Edge {
     return dom;
   }
 
-  redrawArrow(arrowDom, lineDom) {
-    const linePath = lineDom.getAttribute('d');
+  redrawArrow() {
+    const linePath = this.lineDom.getAttribute('d');
 
-    const length = lineDom.getTotalLength();
+    const length = this.lineDom.getTotalLength();
     if (length) {
       let arrowFinalPosition = (length * this.arrowPosition + this.arrowOffset) / length;
 
@@ -88,21 +88,21 @@ export class Edge {
         arrowFinalPosition = (length * arrowFinalPosition - ArrowUtil.ARROW_TYPE.length) / length;
       }
 
-      let point = lineDom.getPointAtLength(length * arrowFinalPosition);
+      let point = this.lineDom.getPointAtLength(length * arrowFinalPosition);
       let x = point.x;
       let y = point.y;
       let _x = x;
       let _y = y;
 
       let vector = ArrowUtil.calcSlope({
-        dom: lineDom,
+        dom: this.lineDom,
         arrowPosition: arrowFinalPosition,
         path: linePath
       });
       let deg = Math.atan2(vector.y, vector.x) / Math.PI * 180;
       let arrowObj = ArrowUtil.ARROW_TYPE[this.arrowShapeType];
-      arrowDom.setAttribute('d', arrowObj.content);
-      arrowDom.setAttribute('transform', `rotate(${deg}, ${x}, ${y})translate(${_x}, ${_y})`);
+      this.arrowDom.setAttribute('d', arrowObj.content);
+      this.arrowDom.setAttribute('transform', `rotate(${deg}, ${x}, ${y})translate(${_x}, ${_y})`);
     }
   }
 

@@ -14,6 +14,7 @@ export class Diagram {
     this.wrapper.append(this.svg);
 
     this.selectedNode = null;
+    this.movingNode = null;
   }
 
   createEndpoint(options) {
@@ -55,24 +56,24 @@ export class Diagram {
         const endpointDom = endpoint.draw(node);
         this.wrapper.append(endpointDom);
 
-        endpoint.redraw(node, endpointDom);
+        endpoint.redraw(node);
       });
     });
 
     this.edges.forEach(edge => {
       const lineDom = edge.drawLine();
       this.svg.append(lineDom);
-      edge.redrawLine(lineDom);
+      edge.redrawLine();
 
       const arrowDom = edge.drawArrow(lineDom);
       this.svg.append(arrowDom);
-      edge.redrawArrow(arrowDom, lineDom);
+      edge.redrawArrow();
 
       if (edge.label) {
         const labelDom = edge.drawLabel(lineDom);
         this.wrapper.append(labelDom);
 
-        edge.redrawLabel(lineDom, labelDom);
+        edge.redrawLabel();
       }
     });
 
@@ -89,6 +90,31 @@ export class Diagram {
         this.selectedNode.redraw();
         this.selectedNode = null;
       }
+    });
+
+    window.addEventListener('mousemove', (event) => {
+      if (this.movingNode) {
+        this.movingNode.left = event.clientX - this.movingNode.width / 2;
+        this.movingNode.top = event.clientY - this.movingNode.height / 2;
+
+        this.movingNode.endpoints.forEach(endpoint => {
+          endpoint.redraw(this.movingNode);
+        });
+
+        this.edges.filter(edge => edge.sourceNode === this.movingNode || edge.targetNode === this.movingNode).forEach(edge => {
+          edge.redrawLine();
+          edge.redrawArrow();
+          if (edge.label) {
+            edge.redrawLabel();
+          }
+        });
+
+        this.movingNode.redraw();
+      }
+    });
+
+    window.addEventListener('mouseup', (event) => {
+      this.movingNode = null;
     });
 
     window.addEventListener('keydown', (event) => {
@@ -123,6 +149,8 @@ export class Diagram {
         }
 
         event.stopPropagation();
+
+        this.movingNode = node;
 
         if (this.selectedNode === node) {
           this.selectedNode.selected = false;

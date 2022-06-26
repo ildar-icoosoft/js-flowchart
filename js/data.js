@@ -8,7 +8,7 @@ export default {
     left: 510,
     width: 80,
     height: 80,
-    color: 'orange',
+    color: 'green',
     shape: 'circle',
     border: 'dashed',
     endpoints: [{
@@ -89,7 +89,7 @@ export default {
     left: 50,
     width: 107,
     height: 77,
-    color: 'orange',
+    color: 'green',
     shape: 'rect',
     border: 'dashed',
     endpoints: [{
@@ -116,7 +116,7 @@ export default {
     left: 750,
     width: 107,
     height: 77,
-    color: 'orange',
+    color: 'green',
     shape: 'rect',
     border: 'dashed',
     endpoints: [{
