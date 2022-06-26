@@ -62,56 +62,56 @@ table {
   vertical-align: middle;
   border-radius: 5px;
 }
-.orange {
+.flowchart .orange {
   border-width: 1px;
   border-color: #ef8b5b;
   color: var(--flowchart-normal-font-color);
   stroke: #ef8b5b;
   line-height: 33px;
 }
-.green {
+.flowchart .green {
   border-width: 1px;
   border-color: #66cdc5;
   color: var(--flowchart-normal-font-color);
   stroke: #66cdc5;
 }
-.black {
+.flowchart .black {
   border-width: 1px;
   border-color: #8f8f8f;
   color: var(--flowchart-normal-font-color);
   stroke: #8f8f8f;
 }
-.purple {
+.flowchart .purple {
   border-width: 1px;
   border-color: #776ef3;
   color: var(--flowchart-normal-font-color);
   stroke: #776ef3;
 }
-.circle {
+.flowchart .circle {
   width: 80px;
   height: 80px;
   border-radius: 50%;
 }
-.diamond {
+.flowchart .diamond {
   width:105px;
   height:105px;
   transform: rotate(45deg);
 }
-.diamond .rotate {
+.flowchart .diamond .rotate {
   transform: rotate(-45deg);
 }
 
-.rect {
+.flowchart .rect {
   width:105px;
   height:75px;
 }
-.dashed {
+.flowchart .dashed {
   border-style: dashed;
 }
-.solid {
+.flowchart .solid {
   border-style: solid;
 }
-.text {
+.flowchart .text {
   display: inline-block;
   width: 100%;
   height: 100%;
