@@ -1,8 +1,8 @@
 'use strict';
 
-import * as DrawUtil from './utils/link';
 import ArrowUtil from './utils/arrow.js';
 import {getEndpointCoordinates} from "./utils/endpoint.js";
+import {drawManhattan} from "./utils/link/edge-types/manhattan.js";
 
 export class Edge {
   /**
@@ -123,7 +123,7 @@ export class Edge {
       orientation: this.targetEndpoint ? this.targetEndpoint.orientation : undefined
     };
 
-    const obj = DrawUtil.drawManhattan(sourcePoint, targetPoint, {
+    const obj = drawManhattan(sourcePoint, targetPoint, {
       breakPoints: [],
       hasDragged: false,
       draggable: true,

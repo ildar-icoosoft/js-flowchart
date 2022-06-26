@@ -1,6 +1,7 @@
 'use strict';
 
-import { _calcOrientation, _route, LEFT, RIGHT, TOP, BOTTOM, DEFAULT_RADIUS, Point } from './_utils.js';
+import { _calcOrientation, _route, LEFT, RIGHT, TOP, BOTTOM, DEFAULT_RADIUS, Point } from './utils.js';
+
 const getDefaultPath = (pointArr) => {
   let path = pointArr.reduce((path, point) => {
     path.push([
@@ -121,7 +122,7 @@ function getRadiusPath(pointArr) {
   };
 }
 
-function drawManhattan(sourcePoint, targetPoint, options) {
+export function drawManhattan(sourcePoint, targetPoint, options) {
 
   if (!sourcePoint.orientation) {
     sourcePoint.orientation = _calcOrientation(targetPoint.pos[0], targetPoint.pos[1], sourcePoint.pos[0], sourcePoint.pos[1]);
@@ -174,5 +175,3 @@ function drawManhattan(sourcePoint, targetPoint, options) {
   }
 }
 
-
-export default drawManhattan;
