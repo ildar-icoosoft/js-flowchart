@@ -59,7 +59,14 @@ export class Diagram {
       this.svg.append(lineDom);
 
       const arrowDom = edge.drawArrow(lineDom);
-      this.svg.append(arrowDom)
+      this.svg.append(arrowDom);
+
+      if (edge.label) {
+        const labelDom = edge.drawLabel(lineDom);
+        this.wrapper.append(labelDom);
+
+        edge.redrawLabel(lineDom, labelDom);
+      }
     });
   }
 

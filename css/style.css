@@ -121,19 +121,6 @@ table {
   -webkit-line-clamp: 3;
   overflow: hidden;
 }
-.label {
-  position: absolute;
-  display: inline-block;
-  width: 28px;
-  height: 28px;
-  border: 1px solid #776ef3;
-  border-radius: 50%;
-  color: var(--flowchart-normal-font-color);
-  padding: 4px;
-  background: var(--flowchart-theme-color);
-  text-align: center;
-}
-
 
 
 /* link*/
@@ -189,4 +176,18 @@ table {
 }
 .flowchart-circle-endpoint.hover {
  background: orange;
+}
+
+.flowchart-label {
+  position: absolute;
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #776ef3;
+  border-radius: 50%;
+  color: var(--flowchart-normal-font-color);
+  padding: 4px;
+  background: var(--flowchart-theme-color);
+  text-align: center;
+  z-index: 500;
 }
