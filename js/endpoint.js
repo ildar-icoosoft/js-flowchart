@@ -8,24 +8,26 @@ export class Endpoint {
     this.orientation = options.orientation;
     this.pos = options.pos;
 
-    this.width = 8;
-    this.height = 8;
+    this.width = 0;
+    this.height = 0;
   }
 
   draw(node) {
-    const coordinates = getEndpointCoordinates(node, this);
-
     const el = document.createElement('div');
     el.classList.add('flowchart-circle-endpoint', node.color);
     el.setAttribute('id', `${node.id}-${this.id}`);
 
-    el.style.left = `${Math.floor(coordinates[0]) - this.width / 2}px`;
-    el.style.top = `${Math.floor(coordinates[1]) - this.height / 2}px`;
-
-    // 2px - толщина border. Нужно будет избавиться от этого костыля
-    el.style.width = `${this.width - 2}px`;
-    el.style.height = `${this.height - 2}px`;
-
     return el;
   }
+
+  redraw(node, el) {
+    this.width = el.offsetWidth;
+    this.height = el.offsetHeight;
+
+    const coordinates = getEndpointCoordinates(node, this);
+
+    el.style.left = `${coordinates[0] - this.width / 2}px`;
+    el.style.top = `${coordinates[1] - this.height / 2}px`;
+  }
+
 }

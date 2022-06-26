@@ -25,11 +25,12 @@ export class Edge {
   drawLine() {
     let el = document.createElementNS('http://www.w3.org/2000/svg', 'path')
     el.classList.add('flowchart-link', this.color);
+    return el;
+  }
 
+  redrawLine(el) {
     const path = this.calcPath();
     el.setAttribute('d', path);
-
-    return el;
   }
 
   drawLabel() {
@@ -52,21 +53,14 @@ export class Edge {
     labelDom.style.top = `${point.y - labelDom.offsetHeight / 2}px`;
   }
 
-  drawArrow(lineDom) {
-    let arrowObj = ArrowUtil.ARROW_TYPE[this.arrowShapeType];
-    let arrowWidth = arrowObj.width || 8;
-    let arrowHeight = arrowObj.height || 8;
-    let dom = undefined;
-    if (arrowObj.type === 'pathString') {
-      dom = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    } else if (arrowObj.type === 'svg') {
-      dom = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-      dom.setAttribute('href', arrowObj.content);
-      dom.setAttribute('width', `${arrowWidth}px`);
-      dom.setAttribute('height', `${arrowHeight}px`);
-    }
+  drawArrow() {
+    let dom = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     dom.classList.add('flowchart-arrow', this.color);
 
+    return dom;
+  }
+
+  redrawArrow(arrowDom, lineDom) {
     const linePath = lineDom.getAttribute('d');
 
     const length = lineDom.getTotalLength();
@@ -96,23 +90,11 @@ export class Edge {
       });
       let deg = Math.atan2(vector.y, vector.x) / Math.PI * 180;
       let arrowObj = ArrowUtil.ARROW_TYPE[this.arrowShapeType];
-      let arrowWidth = arrowObj.width || 8;
-      let arrowHeight = arrowObj.height || 8;
-      if (arrowObj.type === 'pathString') {
-        dom.setAttribute('d', arrowObj.content);
-      } else if (arrowObj.type === 'svg') {
-        if (vector.x === 0) {
-          _y -= arrowHeight / 2;
-        } else {
-          _x -= arrowWidth / 2;
-          _y -= arrowHeight / 2;
-        }
-      }
-      dom.setAttribute('transform', `rotate(${deg}, ${x}, ${y})translate(${_x}, ${_y})`);
+      arrowDom.setAttribute('d', arrowObj.content);
+      arrowDom.setAttribute('transform', `rotate(${deg}, ${x}, ${y})translate(${_x}, ${_y})`);
     }
-
-    return dom;
   }
+
 
   calcPath() {
     const sourceEndpointCoordinates = getEndpointCoordinates(this.sourceNode, this.sourceEndpoint);

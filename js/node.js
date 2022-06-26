@@ -22,24 +22,6 @@ export class Node {
     element.classList.add('flowchart-node');
     element.setAttribute('id', this.id);
 
-    if (this.shape === 'diamond') {
-      const halfWidth = this.width / 2;
-      const diamondWidth = Math.sqrt(2 * halfWidth * halfWidth);
-
-      // 2px - толщина border. Нужно будет избавиться от этого костыля
-      element.style.width = `${diamondWidth - 2}px`;
-      element.style.height = `${diamondWidth - 2}px`;
-
-      element.style.top = `${this.top + (this.width - diamondWidth) / 2}px`;
-      element.style.left = `${this.left + (this.width - diamondWidth) / 2}px`;
-    } else {
-      element.style.width = `${this.width - 2}px`;
-      element.style.height = `${this.height - 2}px`;
-
-      element.style.top = `${this.top}px`;
-      element.style.left = `${this.left}px`;
-    }
-
     element.classList.add(this.shape);
 
     element.classList.add(this.color);
@@ -55,5 +37,26 @@ export class Node {
     element.append(textSpan);
 
     return element;
+  }
+
+  redraw(nodeEl) {
+    if (this.shape === 'diamond') {
+      const halfWidth = this.width / 2;
+      const diamondWidth = Math.sqrt(2 * halfWidth * halfWidth);
+
+      // @todo 2px - толщина border. Нужно будет избавиться от этого костыля
+      nodeEl.style.width = `${diamondWidth - 2}px`;
+      nodeEl.style.height = `${diamondWidth - 2}px`;
+
+      nodeEl.style.top = `${this.top + (this.width - diamondWidth) / 2}px`;
+      nodeEl.style.left = `${this.left + (this.width - diamondWidth) / 2}px`;
+    } else {
+      // @todo 2px - толщина border. Нужно будет избавиться от этого костыля
+      nodeEl.style.width = `${this.width - 2}px`;
+      nodeEl.style.height = `${this.height - 2}px`;
+
+      nodeEl.style.top = `${this.top}px`;
+      nodeEl.style.left = `${this.left}px`;
+    }
   }
 }
