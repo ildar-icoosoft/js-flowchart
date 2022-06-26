@@ -16,7 +16,7 @@ export class Endpoint {
     const coordinates = getEndpointCoordinates(node, this);
 
     const el = document.createElement('div');
-    el.classList.add('flowchart-circle-endpoint');
+    el.classList.add('flowchart-circle-endpoint', node.color);
     el.setAttribute('id', `${node.id}-${this.id}`);
 
     el.style.left = `${Math.floor(coordinates[0]) - this.width / 2}px`;

@@ -65,7 +65,7 @@ export class Edge {
       dom.setAttribute('width', `${arrowWidth}px`);
       dom.setAttribute('height', `${arrowHeight}px`);
     }
-    dom.setAttribute('class', 'flowchart-arrow');
+    dom.classList.add('flowchart-arrow', this.color);
 
     const linePath = lineDom.getAttribute('d');
 
