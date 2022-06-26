@@ -20,11 +20,18 @@ export class Edge {
     this.arrowOffset = options.arrowOffset ?? 0;
     this.labelPosition = options.labelPosition ?? 0.5;
     this.labelOffset = options.labelOffset ?? 0;
+
+    this.lineDom = null;
+    this.arrowDom = null;
+    this.labelDom = null;
   }
 
   drawLine() {
     let el = document.createElementNS('http://www.w3.org/2000/svg', 'path')
     el.classList.add('flowchart-link', this.color);
+
+    this.lineDom = el;
+
     return el;
   }
 
@@ -37,6 +44,8 @@ export class Edge {
     let dom = document.createElement('span');
     dom.className = 'flowchart-label';
     dom.innerText = this.label;
+
+    this.labelDom = dom;
 
     return dom;
   }
@@ -56,6 +65,8 @@ export class Edge {
   drawArrow() {
     let dom = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     dom.classList.add('flowchart-arrow', this.color);
+
+    this.arrowDom = dom;
 
     return dom;
   }

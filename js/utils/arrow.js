@@ -9,7 +9,7 @@ let ARROW_TYPE = {
       type: 'pathString',
       content: 'M5 0 L0 -2 Q 1.0 0 0 2 Z'
     },
-    length: 5,
+    length: 7,
 };
 
 function calcSlope(opts) {
