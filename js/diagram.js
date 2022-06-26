@@ -47,19 +47,24 @@ export class Diagram {
     this.nodes.forEach(node => {
       const nodeDom = node.draw();
       this.wrapper.append(nodeDom);
+      node.redraw(nodeDom);
 
       node.endpoints.forEach(endpoint => {
         const endpointDom = endpoint.draw(node);
         this.wrapper.append(endpointDom);
+
+        endpoint.redraw(node, endpointDom);
       });
     });
 
     this.edges.forEach(edge => {
       const lineDom = edge.drawLine();
       this.svg.append(lineDom);
+      edge.redrawLine(lineDom);
 
       const arrowDom = edge.drawArrow(lineDom);
       this.svg.append(arrowDom);
+      edge.redrawArrow(arrowDom, lineDom);
 
       if (edge.label) {
         const labelDom = edge.drawLabel(lineDom);
