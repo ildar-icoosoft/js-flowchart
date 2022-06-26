@@ -12,6 +12,8 @@ export class Diagram {
     this.svg = this.generateSvgWrapper();
 
     this.wrapper.append(this.svg);
+
+    this.selectedNode = null;
   }
 
   createEndpoint(options) {
@@ -47,7 +49,7 @@ export class Diagram {
     this.nodes.forEach(node => {
       const nodeDom = node.draw();
       this.wrapper.append(nodeDom);
-      node.redraw(nodeDom);
+      node.redraw();
 
       node.endpoints.forEach(endpoint => {
         const endpointDom = endpoint.draw(node);
@@ -72,6 +74,70 @@ export class Diagram {
 
         edge.redrawLabel(lineDom, labelDom);
       }
+    });
+
+    this.addEventListeners();
+  }
+
+  /**
+   * private
+   */
+  addEventListeners() {
+    window.addEventListener('mousedown', () => {
+      if (this.selectedNode) {
+        this.selectedNode.selected = false;
+        this.selectedNode.redraw();
+        this.selectedNode = null;
+      }
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if (event.code === 'Delete' && this.selectedNode) {
+        this.selectedNode.endpoints.forEach(endpoint => {
+          this.wrapper.removeChild(endpoint.dom);
+        });
+        this.nodes = this.nodes.filter(node => node !== this.selectedNode);
+        this.wrapper.removeChild(this.selectedNode.dom);
+
+        this.edges = this.edges.filter(edge => {
+          if (edge.sourceNode === this.selectedNode || edge.targetNode === this.selectedNode) {
+            this.svg.removeChild(edge.arrowDom);
+            this.svg.removeChild(edge.lineDom);
+            if (edge.labelDom) {
+              this.wrapper.removeChild(edge.labelDom);
+            }
+            return false;
+          }
+          return true;
+        });
+
+        this.selectedNode = null;
+      }
+    });
+
+    this.nodes.forEach(node => {
+      node.dom.addEventListener('mousedown', (event) => {
+        const LEFT_KEY = 0;
+        if (event.button !== LEFT_KEY) {
+          return;
+        }
+
+        event.stopPropagation();
+
+        if (this.selectedNode === node) {
+          this.selectedNode.selected = false;
+          this.selectedNode = null;
+        } else {
+          if (this.selectedNode !== null) {
+            this.selectedNode.selected = false;
+            this.selectedNode.redraw();
+          }
+
+          this.selectedNode = node;
+          node.selected = true;
+        }
+        node.redraw();
+      });
     });
   }
 

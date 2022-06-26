@@ -1,10 +1,12 @@
 'use strict';
 
-export class Node {
+export class Node extends EventTarget {
   /**
    * @param options
    */
   constructor(options) {
+    super();
+
     this.id = options.id;
     this.left = options.left;
     this.top = options.top;
@@ -15,6 +17,9 @@ export class Node {
     this.border = options.border;
     this.text = options.text;
     this.endpoints = options.endpoints;
+
+    this.dom = null;
+    this.selected = options.selected ?? false;
   }
 
   draw() {
@@ -36,10 +41,20 @@ export class Node {
 
     element.append(textSpan);
 
+    this.dom = element;
+
     return element;
   }
 
-  redraw(nodeEl) {
+  redraw() {
+    const nodeEl = this.dom;
+
+    if (this.selected) {
+      nodeEl.classList.add('selected');
+    } else {
+      nodeEl.classList.remove('selected');
+    }
+
     if (this.shape === 'diamond') {
       const halfWidth = this.width / 2;
       const diamondWidth = Math.sqrt(2 * halfWidth * halfWidth);

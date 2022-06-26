@@ -10,6 +10,8 @@ export class Endpoint {
 
     this.width = 0;
     this.height = 0;
+
+    this.dom = null;
   }
 
   draw(node) {
@@ -17,17 +19,21 @@ export class Endpoint {
     el.classList.add('flowchart-circle-endpoint', node.color);
     el.setAttribute('id', `${node.id}-${this.id}`);
 
+    this.dom = el;
+
     return el;
   }
 
-  redraw(node, el) {
-    this.width = el.offsetWidth;
-    this.height = el.offsetHeight;
+  redraw(node) {
+    const endpointDom = this.dom;
+
+    this.width = endpointDom.offsetWidth;
+    this.height = endpointDom.offsetHeight;
 
     const coordinates = getEndpointCoordinates(node, this);
 
-    el.style.left = `${coordinates[0] - this.width / 2}px`;
-    el.style.top = `${coordinates[1] - this.height / 2}px`;
+    endpointDom.style.left = `${coordinates[0] - this.width / 2}px`;
+    endpointDom.style.top = `${coordinates[1] - this.height / 2}px`;
   }
 
 }

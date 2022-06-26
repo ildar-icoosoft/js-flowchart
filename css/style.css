@@ -129,9 +129,6 @@ table {
   stroke:  #BFBFBF;
   stroke-width: 1px;
 }
-.flowchart-link:hover {
-  stroke: #F66902;
-}
 .flowchart-label {
   position: absolute;
 }
@@ -139,10 +136,6 @@ table {
   fill:  #BFBFBF;
   stroke:  #BFBFBF;
   stroke-width: 1px;
-}
-.flowchart-arrow:hover {
-  fill: #F66902;
-  stroke: #F66902;
 }
 
 .flowchart-link-event-handler {
@@ -190,4 +183,8 @@ table {
   background: var(--flowchart-theme-color);
   text-align: center;
   z-index: 500;
+}
+
+.flowchart-node.selected {
+  border-color: red;
 }

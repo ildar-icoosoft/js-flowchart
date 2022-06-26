@@ -1,4 +1,4 @@
 :root {
-  --flowchart-theme-color: #fff;
+  --flowchart-theme-color: rgba(255, 255, 255, 0.8);
   --flowchart-normal-font-color: #222;
 }
