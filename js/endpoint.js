@@ -10,6 +10,8 @@ export class Endpoint {
 
     this.width = 0;
     this.height = 0;
+    this.left = 0;
+    this.top = 0;
 
     this.dom = null;
   }
@@ -32,8 +34,11 @@ export class Endpoint {
 
     const coordinates = getEndpointCoordinates(node, this);
 
-    endpointDom.style.left = `${coordinates[0] - this.width / 2}px`;
-    endpointDom.style.top = `${coordinates[1] - this.height / 2}px`;
+    this.left = coordinates[0] - this.width / 2;
+    this.top = coordinates[1] - this.height / 2;
+
+    endpointDom.style.left = `${this.left}px`;
+    endpointDom.style.top = `${this.top}px`;
   }
 
 }

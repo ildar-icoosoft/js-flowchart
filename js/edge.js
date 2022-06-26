@@ -10,9 +10,10 @@ export class Edge {
    */
   constructor(options) {
     this.sourceEndpoint = options.sourceEndpoint;
-    this.targetEndpoint = options.targetEndpoint;
+    this.targetEndpoint = options.targetEndpoint ?? null;
     this.sourceNode = options.sourceNode;
-    this.targetNode = options.targetNode;
+    this.targetNode = options.targetNode ?? null;
+    this.targetCoordinates = options.targetCoordinates ?? null;
     this.label = options.label;
     this.color = options.color;
     this.arrowShapeType = options.arrowShapeType ?? 'default';
@@ -109,7 +110,8 @@ export class Edge {
 
   calcPath() {
     const sourceEndpointCoordinates = getEndpointCoordinates(this.sourceNode, this.sourceEndpoint);
-    const targetEndpointCoordinates = getEndpointCoordinates(this.targetNode, this.targetEndpoint);
+
+    const targetEndpointCoordinates = this.targetCoordinates ?? getEndpointCoordinates(this.targetNode, this.targetEndpoint);
 
     const sourcePoint = {
       pos: sourceEndpointCoordinates,
@@ -118,7 +120,7 @@ export class Edge {
 
     const targetPoint = {
       pos: targetEndpointCoordinates,
-      orientation: this.targetEndpoint.orientation
+      orientation: this.targetEndpoint ? this.targetEndpoint.orientation : undefined
     };
 
     const obj = DrawUtil.drawManhattan(sourcePoint, targetPoint, {
