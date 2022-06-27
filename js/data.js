@@ -547,38 +547,30 @@ export default {
     targetEndpoint: 'top',
     sourceNode: '0',
     targetNode: '1',
-    type: 'endpoint',
     color: 'black',
-    arrow: true,
     arrowPosition: 1,
   }, {
     sourceEndpoint: 'right',
     targetEndpoint: 'left',
     sourceNode: '1',
     targetNode: '4',
-    type: 'endpoint',
     color: 'black',
-    arrow: true,
     arrowPosition: 1,
   }, {
     sourceEndpoint: 'left',
     targetEndpoint: 'right',
     sourceNode: '1',
     targetNode: '2',
-    type: 'endpoint',
     color: 'purple',
     label: 'no',
-    arrow: true,
     arrowPosition: 1,
   }, {
     sourceEndpoint: 'bottom',
     targetEndpoint: 'top',
     sourceNode: '1',
     targetNode: '7',
-    type: 'endpoint',
     color: 'purple',
     label: 'yes',
-    arrow: true,
     arrowPosition: 1,
   }, {
     sourceEndpoint: 'left',
@@ -586,8 +578,6 @@ export default {
     sourceNode: '2',
     targetNode: '3',
     color: 'black',
-    type: 'endpoint',
-    arrow: true,
     arrowPosition: 1,
   }, {
     sourceEndpoint: 'bottom',
@@ -595,8 +585,6 @@ export default {
     sourceNode: '2',
     targetNode: '5',
     color: 'green',
-    type: 'endpoint',
-    arrow: true,
     arrowPosition: 1,
   }, {
     sourceEndpoint: 'bottom',
@@ -604,8 +592,6 @@ export default {
     sourceNode: '5',
     targetNode: '7',
     color: 'green',
-    type: 'endpoint',
-    arrow: true,
     arrowPosition: 1,
   }, {
     sourceEndpoint: 'right',
@@ -613,8 +599,6 @@ export default {
     sourceNode: '4',
     targetNode: '6',
     color: 'black',
-    type: 'endpoint',
-    arrow: true,
     arrowPosition: 1,
   }, {
     sourceEndpoint: 'bottom',
@@ -622,8 +606,6 @@ export default {
     sourceNode: '6',
     targetNode: '8',
     color: 'black',
-    type: 'endpoint',
-    arrow: true,
     arrowPosition: 1,
   }, {
     sourceEndpoint: 'bottom',
@@ -631,8 +613,6 @@ export default {
     sourceNode: '8',
     targetNode: '9',
     color: 'black',
-    type: 'endpoint',
-    arrow: true,
     arrowPosition: 1,
   }, {
     sourceEndpoint: 'bottom',
@@ -640,8 +620,6 @@ export default {
     sourceNode: '9',
     targetNode: '16',
     color: 'black',
-    type: 'endpoint',
-    arrow: true,
     arrowPosition: 1,
   }, {
     sourceEndpoint: 'right',
@@ -649,8 +627,6 @@ export default {
     sourceNode: '7',
     targetNode: '10',
     color: 'purple',
-    type: 'endpoint',
-    arrow: true,
     arrowPosition: 1,
   }, {
     sourceEndpoint: 'bottom',
@@ -658,16 +634,12 @@ export default {
     sourceNode: '10',
     targetNode: '11',
     color: 'black',
-    type: 'endpoint',
-    arrow: true,
     arrowPosition: 1,
   }, {
     sourceEndpoint: 'bottom',
     targetEndpoint: 'top',
     sourceNode: '11',
     targetNode: '12',
-    type: 'endpoint',
-    arrow: true,
     arrowPosition: 1,
   }, {
     sourceEndpoint: 'bottom',
@@ -675,8 +647,6 @@ export default {
     sourceNode: '7',
     targetNode: '13',
     color: 'purple',
-    type: 'endpoint',
-    arrow: true,
     arrowPosition: 1,
   }, {
     sourceEndpoint: 'bottom',
@@ -684,8 +654,6 @@ export default {
     sourceNode: '13',
     targetNode: '14',
     color: 'green',
-    type: 'endpoint',
-    arrow: true,
     arrowPosition: 1,
   }, {
     sourceEndpoint: 'bottom',
@@ -693,8 +661,6 @@ export default {
     sourceNode: '14',
     targetNode: '15',
     color: 'green',
-    type: 'endpoint',
-    arrow: true,
     arrowPosition: 1,
   }, {
     sourceEndpoint: 'bottom',
@@ -702,8 +668,6 @@ export default {
     sourceNode: '15',
     targetNode: '16',
     color: 'green',
-    type: 'endpoint',
-    arrow: true,
     arrowPosition: 1,
   }, {
     sourceEndpoint: 'left',
@@ -711,8 +675,6 @@ export default {
     sourceNode: '16',
     targetNode: '17',
     color: 'green',
-    type: 'endpoint',
-    arrow: true,
     arrowPosition: 1,
   }, {
     sourceEndpoint: 'bottom',
@@ -720,8 +682,6 @@ export default {
     sourceNode: '17',
     targetNode: '18',
     color: 'green',
-    type: 'endpoint',
-    arrow: true,
     arrowPosition: 1,
   }, {
     sourceEndpoint: 'bottom',
@@ -729,8 +689,6 @@ export default {
     sourceNode: '18',
     targetNode: '19',
     color: 'green',
-    type: 'endpoint',
-    arrow: true,
     arrowPosition: 1,
   }]
 };

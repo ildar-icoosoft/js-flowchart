@@ -226,36 +226,3 @@ export function _calcOrientation(beginX, beginY, endX, endY, orientationLimit) {
       return [0, 1];
   }
 }
-
-export function _findManhattanPoint(points, pos) {
-  let result = undefined;
-  let gap = Infinity;
-  for (let i = 0; i < points.length - 1; i++) {
-    let _dir = points[i].x === points[i + 1].x ? 'vertical' : 'horizontal';
-    let _from = points[i];
-    let _to = points[i + 1];
-
-    if (_dir === 'vertical') {
-      if (gap > Math.abs(pos.x - _from.x)) {
-        gap = Math.abs(pos.x - _from.x);
-        result = {
-          from: _from,
-          to: _to,
-          direction: _dir,
-          index: i
-        }
-      }
-    } else {
-      if (gap > Math.abs(pos.y - _from.y)) {
-        gap = Math.abs(pos.y - _from.y);
-        result = {
-          from: _from,
-          to: _to,
-          direction: _dir,
-          index: i
-        }
-      }
-    }
-  }
-  return result;
-}
