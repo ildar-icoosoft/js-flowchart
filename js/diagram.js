@@ -157,7 +157,7 @@ export class Diagram {
     });
 
     // процесс перемещения ноды
-    this.wrapperDom.addEventListener('mousemove', (event) => {
+    window.addEventListener('mousemove', (event) => {
       if (!this.movingNode) {
         return;
       }
