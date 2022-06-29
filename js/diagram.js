@@ -102,6 +102,8 @@ export class Diagram {
         }
         if (!edge) {
           edge = new Edge({
+            wrapperDom: this.wrapperDom,
+            svgWrapperDom: this.svgWrapperDom,
             color: 'green',
             type: 'endpoint',
             arrowPosition: 1,
