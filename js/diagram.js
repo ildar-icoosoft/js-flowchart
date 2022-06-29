@@ -20,9 +20,9 @@ export class Diagram {
 
   addEventListeners() {
     // отключаем возможность выделения текста
-    window.addEventListener('selectstart', (e) => e.preventDefault());
+    this.wrapperDom.addEventListener('selectstart', (e) => e.preventDefault());
 
-    // обработка событий перемещения ноды
+    // обработка событий выделения ноды
     this.addSelectNodeEventHandlers();
 
     // обработка событий перемещения ноды
@@ -55,9 +55,17 @@ export class Diagram {
     // процесс перемещения ребра
     window.addEventListener('mousemove', (event) => {
       if (this.movingEdge) {
+        let offsetX = event.pageX - this.wrapperDom.offsetLeft;
+        if (offsetX < 0) offsetX = 0;
+        if (offsetX > this.wrapperDom.offsetWidth) offsetX = this.wrapperDom.offsetWidth;
+
+        let offsetY = event.pageY - this.wrapperDom.offsetTop;
+        if (offsetY < 0) offsetY = 0;
+        if (offsetY > this.wrapperDom.offsetHeight) offsetY = this.wrapperDom.offsetHeight;
+
         this.movingEdge.targetCoordinates = [
-          event.clientX,
-          event.clientY
+          offsetX,
+          offsetY
         ];
         this.movingEdge.targetNode = null;
         this.movingEdge.targetEndpoint = null;
@@ -112,7 +120,10 @@ export class Diagram {
             sourceEndpoint: endpoint,
             targetNode: null,
             targetEndpoint: null,
-            targetCoordinates: [originEvent.clientX, originEvent.clientY]
+            targetCoordinates: [
+              originEvent.pageX - this.wrapperDom.offsetLeft,
+              originEvent.pageY - this.wrapperDom.offsetTop
+            ]
           });
           this.edges.push(edge);
 
@@ -164,8 +175,13 @@ export class Diagram {
 
       const node = this.movingNode;
 
-      node.left = event.clientX - node.width / 2;
-      node.top = event.clientY - node.height / 2;
+      node.left = event.pageX - this.wrapperDom.offsetLeft - node.width / 2;
+      if (node.left < 0) node.left = 0;
+      if (node.left > this.wrapperDom.offsetWidth - node.width) node.left = this.wrapperDom.offsetWidth - node.width;
+
+      node.top = event.pageY - this.wrapperDom.offsetTop - node.height / 2;
+      if (node.top < 0) node.top = 0;
+      if (node.top > this.wrapperDom.offsetHeight - node.height) node.top = this.wrapperDom.offsetHeight - node.height;
 
       this.edges.filter(edge => edge.sourceNode === node || edge.targetNode === node).forEach(edge => {
         edge.redraw();

@@ -49,10 +49,20 @@ table {
 
 /* Reset CSS (end) */
 
+html, body {
+  height: 100%;
+}
+
+.content {
+  height: 100%;
+}
+
+
 .flowchart {
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden;
   z-index: 3;
 }
 .flowchart-node {
