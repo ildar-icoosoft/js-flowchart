@@ -1,7 +1,6 @@
 'use strict';
 
 import ArrowUtil from './utils/arrow.js';
-import {getEndpointCoordinates} from "./utils/endpoint.js";
 import {drawManhattan} from "./utils/link/edge-types/manhattan.js";
 
 export class Edge {
@@ -9,6 +8,9 @@ export class Edge {
    * @param options
    */
   constructor(options) {
+    this.wrapperDom = options.wrapperDom;
+    this.svgWrapperDom = options.svgWrapperDom;
+
     this.sourceEndpoint = options.sourceEndpoint;
     this.targetEndpoint = options.targetEndpoint ?? null;
     this.sourceNode = options.sourceNode;
@@ -27,31 +29,56 @@ export class Edge {
     this.labelDom = null;
   }
 
-  drawLine() {
-    let el = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-    el.classList.add('flowchart-link', this.color);
-
-    this.lineDom = el;
-
-    return el;
+  draw() {
+    this.drawLine();
+    this.drawLabel();
+    this.drawArrow();
   }
 
+  redraw() {
+    this.redrawLine();
+    this.redrawLabel();
+    this.redrawArrow();
+  }
+
+  /**
+   * @private
+   */
+  drawLine() {
+    this.lineDom = this.createLineDom();
+    this.svgWrapperDom.append(this.lineDom);
+    requestAnimationFrame(() => {
+      this.redrawLine();
+    });
+  }
+
+  /**
+   * @private
+   */
   redrawLine() {
     const path = this.calcPath();
     this.lineDom.setAttribute('d', path);
   }
 
+  /**
+   * @private
+   */
   drawLabel() {
-    let dom = document.createElement('span');
-    dom.className = 'flowchart-label';
-    dom.innerText = this.label;
+    if (!this.label) return;
 
-    this.labelDom = dom;
-
-    return dom;
+    this.labelDom = this.createLabelDom();
+    this.wrapperDom.append(this.labelDom);
+    requestAnimationFrame(() => {
+      this.redrawLabel();
+    });
   }
 
+  /**
+   * @private
+   */
   redrawLabel() {
+    if (!this.label) return;
+
     const length = this.lineDom.getTotalLength();
     if(!length) {
       return;
@@ -63,15 +90,20 @@ export class Edge {
     this.labelDom.style.top = `${point.y - this.labelDom.offsetHeight / 2}px`;
   }
 
+  /**
+   * @private
+   */
   drawArrow() {
-    let dom = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    dom.classList.add('flowchart-arrow', this.color);
-
-    this.arrowDom = dom;
-
-    return dom;
+    this.arrowDom = this.createArrowDom();
+    this.svgWrapperDom.append(this.arrowDom);
+    requestAnimationFrame(() => {
+      this.redrawArrow();
+    });
   }
 
+  /**
+   * @private
+   */
   redrawArrow() {
     const linePath = this.lineDom.getAttribute('d');
 
@@ -89,11 +121,9 @@ export class Edge {
         arrowFinalPosition = (length * arrowFinalPosition - ArrowUtil.ARROW_TYPE.length) / length;
       }
 
-      let point = this.lineDom.getPointAtLength(length * arrowFinalPosition);
-      let x = point.x;
-      let y = point.y;
-      let _x = x;
-      let _y = y;
+      const point = this.lineDom.getPointAtLength(length * arrowFinalPosition);
+      const x = point.x;
+      const y = point.y;
 
       let vector = ArrowUtil.calcSlope({
         dom: this.lineDom,
@@ -103,15 +133,17 @@ export class Edge {
       let deg = Math.atan2(vector.y, vector.x) / Math.PI * 180;
       let arrowObj = ArrowUtil.ARROW_TYPE[this.arrowShapeType];
       this.arrowDom.setAttribute('d', arrowObj.content);
-      this.arrowDom.setAttribute('transform', `rotate(${deg}, ${x}, ${y})translate(${_x}, ${_y})`);
+      this.arrowDom.setAttribute('transform', `rotate(${deg}, ${x}, ${y})translate(${x}, ${y})`);
     }
   }
 
-
+  /**
+   * @private
+   */
   calcPath() {
-    const sourceEndpointCoordinates = getEndpointCoordinates(this.sourceNode, this.sourceEndpoint);
+    const sourceEndpointCoordinates = this.sourceEndpoint.getEndpointCoordinates();
 
-    const targetEndpointCoordinates = this.targetCoordinates ?? getEndpointCoordinates(this.targetNode, this.targetEndpoint);
+    const targetEndpointCoordinates = this.targetCoordinates ?? this.targetEndpoint.getEndpointCoordinates();
 
     const sourcePoint = {
       pos: sourceEndpointCoordinates,
@@ -135,5 +167,44 @@ export class Edge {
     obj.breakPoints[obj.breakPoints.length - 1].type = 'end';
 
     return path;
+  }
+
+  /**
+   * @private
+   * @return {SVGPathElement}
+   */
+  createLineDom() {
+    const el = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+    el.classList.add('flowchart-link', this.color);
+    return el;
+  }
+
+  /**
+   * @private
+   * @return {HTMLSpanElement}
+   */
+  createLabelDom() {
+    const el = document.createElement('span');
+    el.className = 'flowchart-label';
+    el.innerText = this.label;
+    return el;
+  }
+
+  /**
+   * @private
+   * @return {SVGPathElement}
+   */
+  createArrowDom() {
+    const el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    el.classList.add('flowchart-arrow', this.color);
+    return el;
+  }
+
+  unmount() {
+    this.svgWrapperDom.removeChild(this.lineDom);
+    if (this.labelDom) {
+      this.wrapperDom.removeChild(this.labelDom);
+    }
+    this.svgWrapperDom.removeChild(this.arrowDom);
   }
 }
