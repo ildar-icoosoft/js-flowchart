@@ -77,7 +77,7 @@ export class Diagram {
 
         const targetEndpoint = findEndpointByCoordinates(this.nodes, this.movingEdge.targetCoordinates);
 
-        if (targetEndpoint && this.movingEdge.sourceEndpoint !== targetEndpoint) {
+        if (targetEndpoint && this.movingEdge.sourceEndpoint !== targetEndpoint.endpoint) {
           this.movingEdge.targetCoordinates = null;
           this.movingEdge.targetNode = targetEndpoint.node;
           this.movingEdge.targetEndpoint = targetEndpoint.endpoint;
@@ -95,6 +95,7 @@ export class Diagram {
       // начало перемещения ребра (либо создается новое ребро, либо перемещается существующее, если клик произошёл на конечной точке ребра)
       node.addEventListener('endpointMousedown', (event) => {
         const endpoint = event.detail.endpoint;
+        const originEvent = event.detail.originEvent;
 
         let edge = this.edges.find(edgeItem => edgeItem.targetEndpoint === endpoint || edgeItem.sourceEndpoint === endpoint);
         if (edge && edge.sourceEndpoint === endpoint) {
@@ -111,7 +112,7 @@ export class Diagram {
             sourceEndpoint: endpoint,
             targetNode: null,
             targetEndpoint: null,
-            targetCoordinates: [event.clientX, event.clientY]
+            targetCoordinates: [originEvent.clientX, originEvent.clientY]
           });
           this.edges.push(edge);
 

@@ -26,7 +26,7 @@ export class Endpoint extends EventTarget {
       }
       event.stopPropagation();
 
-      this.dispatchEvent(new Event('mousedown'));
+      this.dispatchEvent(new CustomEvent('mousedown', {detail: {originEvent: event}}));
     })
   }
 
