@@ -132,8 +132,13 @@ export class Node extends EventTarget {
     });
 
     this.endpoints.forEach(endpoint => {
-      endpoint.addEventListener('mousedown', () => {
-        this.dispatchEvent(new CustomEvent('endpointMousedown', {detail: {endpoint}}))
+      endpoint.addEventListener('mousedown', (event) => {
+        this.dispatchEvent(new CustomEvent('endpointMousedown', {
+          detail: {
+            endpoint,
+            originEvent: event.detail.originEvent
+          }
+        }));
       });
     });
 
