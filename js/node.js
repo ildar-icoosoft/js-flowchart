@@ -27,7 +27,9 @@ export class Node extends EventTarget {
     this.fromPalette = options.fromPalette ?? false;
 
     this.dom = null;
+    this.textDom = null;
     this.selected = false
+    this.edited = false
   }
 
   createDom() {
@@ -46,10 +48,10 @@ export class Node extends EventTarget {
 
     const textSpan = document.createElement('span');
     textSpan.classList.add('text');
-    textSpan.innerText = this.text;
     if (this.shape === 'diamond') {
       textSpan.classList.add('rotate');
     }
+    this.textDom = textSpan;
 
     element.append(textSpan);
 
@@ -83,6 +85,14 @@ export class Node extends EventTarget {
       nodeEl.classList.remove('selected');
     }
 
+    this.textDom.innerText = this.text;
+    if (this.edited) {
+      this.textDom.setAttribute('contenteditable', 'true');
+      this.textDom.focus();
+    } else {
+      this.textDom.removeAttribute('contenteditable');
+    }
+
     if (this.shape === 'diamond') {
       const halfWidth = this.width / 2;
       const diamondWidth = Math.sqrt(2 * halfWidth * halfWidth);
@@ -114,7 +124,7 @@ export class Node extends EventTarget {
    * @param {KeyboardEvent} event
    */
   handleKeyDown = (event) => {
-    if (event.code === 'Delete' && this.selected) {
+    if (event.code === 'Delete' && this.selected && !this.edited) {
       this.unmount();
     }
   }
@@ -123,6 +133,11 @@ export class Node extends EventTarget {
    * @private
    */
   addEventListeners() {
+    // При изменении текста в contenteditable элементе сохраняем текст в модель ноды
+    this.textDom.addEventListener('input', event => {
+      this.text = event.currentTarget.innerText;
+    });
+
     this.dom.addEventListener('mousedown', (event) => {
       if (event.button !== 0) {
         return;
@@ -132,9 +147,7 @@ export class Node extends EventTarget {
 
       this.dispatchEvent(new Event('startDrag'));
 
-      if (!this.selected) {
-        this.dispatchEvent(new Event('selectNode'));
-      }
+      this.dispatchEvent(new Event('selectNode'));
     });
 
     this.endpoints.forEach(endpoint => {
@@ -148,9 +161,11 @@ export class Node extends EventTarget {
       });
     });
 
-    this.dom.addEventListener("dragstart", event => {
-      event.dataTransfer.setData("text/plain", this.shape);
-    });
+    if (this.fromPalette) {
+      this.dom.addEventListener("dragstart", event => {
+        event.dataTransfer.setData("text/plain", this.shape);
+      });
+    }
 
     window.addEventListener('keydown', this.handleKeyDown);
   }
