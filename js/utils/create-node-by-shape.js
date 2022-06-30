@@ -3,7 +3,7 @@ import {Node} from "../node.js";
 const options = {
   circle: {
     id: 'circle',
-    text: 'Fire Incident',
+    text: 'Start',
     top: 0,
     left: 0,
     width: 80,
@@ -31,7 +31,7 @@ const options = {
   },
   rect: {
     id: 'rect',
-    text: 'Employees manually activates alarm',
+    text: 'Action',
     top: 150,
     left: 250,
     width: 107,
