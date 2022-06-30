@@ -1,6 +1,7 @@
 import {Edge} from "./edge.js";
 import {Node} from "./node.js";
 import {findEndpointByCoordinates} from "./utils/endpoint.js";
+import {createNodeByShape} from "./utils/create-node-by-shape.js";
 
 export class Diagram {
   constructor(options) {
@@ -22,17 +23,78 @@ export class Diagram {
     // отключаем возможность выделения текста
     this.wrapperDom.addEventListener('selectstart', (e) => e.preventDefault());
 
-    // обработка событий выделения ноды
-    this.addSelectNodeEventHandlers();
+    this.addNodesEventHandlers(this.nodes);
 
-    // обработка событий перемещения ноды
+    this.addSelectNodeEventHandler();
+
     this.addDragNodesEventHandlers();
 
-    // обработка событий перемещения ребра
     this.addDragEdgeEventHandlers();
 
+    this.addDragFromPaletteEventHandlers();
+  }
+
+  addNodesEventHandlers(nodes) {
+    nodes.forEach(node => {
+      // при выделении ноды, убираем выделение с ранее выделенной ноды
+      node.addEventListener('selectNode', () => {
+        node.selected = true;
+        node.redraw();
+
+        if (this.selectedNode) {
+          this.selectedNode.selected = false;
+          this.selectedNode.redraw();
+        }
+        this.selectedNode = node;
+      });
+    });
+
+    nodes.forEach(node => {
+      // начало перемещения ноды
+      node.addEventListener('startDrag', () => {
+        this.movingNode = node;
+      });
+    });
+
+    nodes.forEach(node => {
+      // начало перемещения ребра (либо создается новое ребро, либо перемещается существующее, если клик произошёл на конечной точке ребра)
+      node.addEventListener('endpointMousedown', (event) => {
+        const endpoint = event.detail.endpoint;
+        const originEvent = event.detail.originEvent;
+
+        let edge = this.edges.find(edgeItem => edgeItem.targetEndpoint === endpoint || edgeItem.sourceEndpoint === endpoint);
+        if (edge && edge.sourceEndpoint === endpoint) {
+          return;
+        }
+        if (!edge) {
+          edge = new Edge({
+            wrapperDom: this.wrapperDom,
+            svgWrapperDom: this.svgWrapperDom,
+            color: 'green',
+            type: 'endpoint',
+            arrowPosition: 1,
+            sourceNode: node,
+            sourceEndpoint: endpoint,
+            targetNode: null,
+            targetEndpoint: null,
+            targetCoordinates: [
+              originEvent.pageX - this.wrapperDom.offsetLeft,
+              originEvent.pageY - this.wrapperDom.offsetTop
+            ]
+          });
+          this.edges.push(edge);
+
+          edge.draw();
+        }
+
+        if (edge) {
+          this.movingEdge = edge;
+        }
+      });
+    });
+
     // обработка уничтожения ноды
-    this.nodes.forEach(node => {
+    nodes.forEach(node => {
       node.addEventListener('unmount', () => {
         this.nodes = this.nodes.filter(item => item !== node);
 
@@ -51,6 +113,41 @@ export class Diagram {
     });
   }
 
+  /**
+   * обработка событий перетаскивания элементов из палитры (для добавления новой ноды)
+   */
+  addDragFromPaletteEventHandlers() {
+    this.wrapperDom.addEventListener('dragover', event => {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "move";
+    });
+
+    this.wrapperDom.addEventListener('drop', event => {
+      event.preventDefault();
+
+      const shape = event.dataTransfer.getData("text/plain");
+
+      const node = createNodeByShape(shape, this.wrapperDom);
+
+      node.left = event.pageX - this.wrapperDom.offsetLeft - node.width / 2;
+      if (node.left < 0) node.left = 0;
+      if (node.left > this.wrapperDom.offsetWidth - node.width) node.left = this.wrapperDom.offsetWidth - node.width;
+
+      node.top = event.pageY - this.wrapperDom.offsetTop - node.height / 2;
+      if (node.top < 0) node.top = 0;
+      if (node.top > this.wrapperDom.offsetHeight - node.height) node.top = this.wrapperDom.offsetHeight - node.height;
+
+      this.nodes.push(node);
+
+      this.addNodesEventHandlers([node]);
+
+      node.draw();
+    });
+  }
+
+  /**
+   * обработка событий перемещения ребра
+   */
   addDragEdgeEventHandlers() {
     // процесс перемещения ребра
     window.addEventListener('mousemove', (event) => {
@@ -98,46 +195,12 @@ export class Diagram {
         this.movingEdge = null;
       }
     });
-
-    this.nodes.forEach(node => {
-      // начало перемещения ребра (либо создается новое ребро, либо перемещается существующее, если клик произошёл на конечной точке ребра)
-      node.addEventListener('endpointMousedown', (event) => {
-        const endpoint = event.detail.endpoint;
-        const originEvent = event.detail.originEvent;
-
-        let edge = this.edges.find(edgeItem => edgeItem.targetEndpoint === endpoint || edgeItem.sourceEndpoint === endpoint);
-        if (edge && edge.sourceEndpoint === endpoint) {
-          return;
-        }
-        if (!edge) {
-          edge = new Edge({
-            wrapperDom: this.wrapperDom,
-            svgWrapperDom: this.svgWrapperDom,
-            color: 'green',
-            type: 'endpoint',
-            arrowPosition: 1,
-            sourceNode: node,
-            sourceEndpoint: endpoint,
-            targetNode: null,
-            targetEndpoint: null,
-            targetCoordinates: [
-              originEvent.pageX - this.wrapperDom.offsetLeft,
-              originEvent.pageY - this.wrapperDom.offsetTop
-            ]
-          });
-          this.edges.push(edge);
-
-          edge.draw();
-        }
-
-        if (edge) {
-          this.movingEdge = edge;
-        }
-      });
-    });
   }
 
-  addSelectNodeEventHandlers() {
+  /**
+   * Обработка событий выделения ноды
+   */
+  addSelectNodeEventHandler() {
     // убираем выделение ноды при клике по экрану
     window.addEventListener('mousedown', () => {
       if (this.selectedNode) {
@@ -146,27 +209,12 @@ export class Diagram {
         this.selectedNode = null;
       }
     });
-
-    this.nodes.forEach(node => {
-      // при выделении ноды, убираем выделение с ранее выделенной ноды
-      node.addEventListener('selectNode', () => {
-        if (this.selectedNode) {
-          this.selectedNode.selected = false;
-          this.selectedNode.redraw();
-        }
-        this.selectedNode = node;
-      });
-    });
   }
 
+  /**
+   * обработка событий перемещения ноды
+   */
   addDragNodesEventHandlers() {
-    this.nodes.forEach(node => {
-      // начало перемещения ноды
-      node.addEventListener('startDrag', () => {
-        this.movingNode = node;
-      });
-    });
-
     // процесс перемещения ноды
     window.addEventListener('mousemove', (event) => {
       if (!this.movingNode) {

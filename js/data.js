@@ -1,6 +1,6 @@
 'use strict';
 
-export default {
+export const flowChartData = {
   nodes: [{
     id: '0',
     text: 'Fire Incident',
@@ -693,3 +693,63 @@ export default {
   }]
 };
 
+export const paletteNodes = [
+  {
+    id: '0',
+    text: 'Start',
+    top: 10,
+    left: 42,
+    width: 80,
+    height: 80,
+    color: 'green',
+    shape: 'circle',
+    border: 'dashed',
+    fromPalette: true,
+    endpoints: [{
+      id: 'top',
+      orientation: [0, -1],
+      pos: [0.5, 0]
+    }, {
+      id: 'right',
+      orientation: [1, 0],
+      pos: [0, 0.5]
+    }, {
+      id: 'bottom',
+      orientation: [0, 1],
+      pos: [0.5, 0]
+    }, {
+      id: 'left',
+      orientation: [-1, 0],
+      pos: [0, 0.5]
+    }]
+  },
+  {
+    id: '1',
+    text: 'Action',
+    top: 100,
+    left: 30,
+    width: 107,
+    height: 77,
+    color: 'green',
+    shape: 'rect',
+    border: 'solid',
+    fromPalette: true,
+    endpoints: [{
+      id: 'top',
+      orientation: [0, -1],
+      pos: [0.5, 0]
+    }, {
+      id: 'right',
+      orientation: [1, 0],
+      pos: [0, 0.5]
+    }, {
+      id: 'bottom',
+      orientation: [0, 1],
+      pos: [0.5, 0]
+    }, {
+      id: 'left',
+      orientation: [-1, 0],
+      pos: [0, 0.5]
+    }]
+  }
+]

@@ -1,12 +1,18 @@
-import mockData from './data.js';
+import {flowChartData, paletteNodes} from './data.js';
 import {Diagram} from "./diagram.js";
+import {Palette} from "./palette.js";
 
 window.addEventListener('DOMContentLoaded', () => {
-  let root = document.getElementById('flowchart-container');
   const diagram = new Diagram({
-    root,
-    nodes: mockData.nodes,
-    edges: mockData.edges
+    root: document.getElementById('flowchart-container'),
+    nodes: flowChartData.nodes,
+    edges: flowChartData.edges
   });
   diagram.draw();
+
+  const palette = new Palette({
+    root: document.getElementById('palette-container'),
+    nodes: paletteNodes
+  });
+  palette.draw();
 });

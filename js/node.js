@@ -23,17 +23,21 @@ export class Node extends EventTarget {
       wrapperDom: this.wrapperDom,
       node: this,
       ...endpointOptions
-    }))
+    }));
+    this.fromPalette = options.fromPalette ?? false;
 
     this.dom = null;
     this.selected = false
-    this.isDragging = false;
   }
 
   createDom() {
     const element = document.createElement('div');
     element.classList.add('flowchart-node');
     element.setAttribute('id', this.id);
+
+    if (this.fromPalette) {
+      element.setAttribute('draggable', 'true');
+    }
 
     element.classList.add(this.shape);
 
@@ -59,9 +63,11 @@ export class Node extends EventTarget {
 
     this.wrapperDom.append(this.dom);
 
-    this.endpoints.forEach(endpoint => {
-      endpoint.draw(false);
-    });
+    if (!this.fromPalette) {
+      this.endpoints.forEach(endpoint => {
+        endpoint.draw(false);
+      });
+    }
 
     requestAnimationFrame(() => {
       this.redraw();
@@ -96,9 +102,11 @@ export class Node extends EventTarget {
       nodeEl.style.left = `${this.left}px`;
     }
 
-    this.endpoints.forEach(endpoint => {
-      endpoint.redraw();
-    });
+    if (!this.fromPalette) {
+      this.endpoints.forEach(endpoint => {
+        endpoint.redraw();
+      });
+    }
   }
 
   /**
@@ -124,11 +132,9 @@ export class Node extends EventTarget {
 
       this.dispatchEvent(new Event('startDrag'));
 
-      if (this.selected) return;
-      this.selected = true;
-      this.redraw();
-
-      this.dispatchEvent(new Event('selectNode'));
+      if (!this.selected) {
+        this.dispatchEvent(new Event('selectNode'));
+      }
     });
 
     this.endpoints.forEach(endpoint => {
@@ -140,6 +146,10 @@ export class Node extends EventTarget {
           }
         }));
       });
+    });
+
+    this.dom.addEventListener("dragstart", event => {
+      event.dataTransfer.setData("text/plain", this.shape);
     });
 
     window.addEventListener('keydown', this.handleKeyDown);

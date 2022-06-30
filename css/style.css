@@ -53,12 +53,24 @@ html, body {
   height: 100%;
 }
 
-.content {
+.container {
+  display: flex;
+  flex-flow: row wrap;
   height: 100%;
+  width: 100%;
+}
+
+#palette-container {
+  width: 166px;
+  border-right: 1px solid gray;
+}
+
+#flowchart-container {
+  width: calc(100% - 167px);
 }
 
 
-.flowchart {
+.flowchart, .palette {
   position: relative;
   width: 100%;
   height: 100%;
@@ -72,56 +84,56 @@ html, body {
   vertical-align: middle;
   border-radius: 5px;
 }
-.flowchart .orange {
+.container .orange {
   border-width: 1px;
   border-color: #ef8b5b;
   color: var(--flowchart-normal-font-color);
   stroke: #ef8b5b;
   line-height: 33px;
 }
-.flowchart .green {
+.container .green {
   border-width: 1px;
   border-color: #66cdc5;
   color: var(--flowchart-normal-font-color);
   stroke: #66cdc5;
 }
-.flowchart .black {
+.container .black {
   border-width: 1px;
   border-color: #8f8f8f;
   color: var(--flowchart-normal-font-color);
   stroke: #8f8f8f;
 }
-.flowchart .purple {
+.container .purple {
   border-width: 1px;
   border-color: #776ef3;
   color: var(--flowchart-normal-font-color);
   stroke: #776ef3;
 }
-.flowchart .circle {
+.container .circle {
   width: 80px;
   height: 80px;
   border-radius: 50%;
 }
-.flowchart .diamond {
+.container .diamond {
   width:105px;
   height:105px;
   transform: rotate(45deg);
 }
-.flowchart .diamond .rotate {
+.container .diamond .rotate {
   transform: rotate(-45deg);
 }
 
-.flowchart .rect {
+.container .rect {
   width:105px;
   height:75px;
 }
-.flowchart .dashed {
+.container .dashed {
   border-style: dashed;
 }
-.flowchart .solid {
+.container .solid {
   border-style: solid;
 }
-.flowchart .text {
+.container .text {
   display: inline-block;
   width: 100%;
   height: 100%;
