@@ -143,6 +143,9 @@ html, body {
   -webkit-line-clamp: 3;
   overflow: hidden;
 }
+.container .text:focus-visible {
+  outline-color: red;
+}
 
 
 /* link*/

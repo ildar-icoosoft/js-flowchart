@@ -21,7 +21,11 @@ export class Diagram {
 
   addEventListeners() {
     // отключаем возможность выделения текста
-    this.wrapperDom.addEventListener('selectstart', (e) => e.preventDefault());
+    this.wrapperDom.addEventListener('selectstart', (e) => {
+      if (!(this.selectedNode && this.selectedNode.edited)) {
+        e.preventDefault()
+      }
+    });
 
     this.addNodesEventHandlers(this.nodes);
 
@@ -38,10 +42,15 @@ export class Diagram {
     nodes.forEach(node => {
       // при выделении ноды, убираем выделение с ранее выделенной ноды
       node.addEventListener('selectNode', () => {
-        node.selected = true;
+        if (node.selected) {
+          node.edited = true;
+        } else {
+          node.selected = true;
+        }
         node.redraw();
 
-        if (this.selectedNode) {
+        if (this.selectedNode && this.selectedNode !== node) {
+          this.selectedNode.edited = false;
           this.selectedNode.selected = false;
           this.selectedNode.redraw();
         }
@@ -128,6 +137,7 @@ export class Diagram {
       const shape = event.dataTransfer.getData("text/plain");
 
       const node = createNodeByShape(shape, this.wrapperDom);
+      if (!node) return;
 
       node.left = event.pageX - this.wrapperDom.offsetLeft - node.width / 2;
       if (node.left < 0) node.left = 0;
@@ -205,6 +215,7 @@ export class Diagram {
     window.addEventListener('mousedown', () => {
       if (this.selectedNode) {
         this.selectedNode.selected = false;
+        this.selectedNode.edited = false;
         this.selectedNode.redraw();
         this.selectedNode = null;
       }
@@ -217,7 +228,7 @@ export class Diagram {
   addDragNodesEventHandlers() {
     // процесс перемещения ноды
     window.addEventListener('mousemove', (event) => {
-      if (!this.movingNode) {
+      if (!this.movingNode || (this.selectedNode && this.selectedNode.edited)) {
         return;
       }
 

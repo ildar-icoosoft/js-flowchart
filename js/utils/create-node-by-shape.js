@@ -62,11 +62,11 @@ const options = {
 /**
  * Создание новой ноды
  * @param {string} shape - форма
- * @param {HTMLDivElement} wrapperDom
+ * @param {HTMLDivElement | null} wrapperDom
  */
 export function createNodeByShape(shape, wrapperDom) {
   if (!options[shape]) {
-    throw Error(`unknown shape ${shape}`);
+    return null;
   }
 
   // @todo генерировать уникальные ID, либо отказаться от них, т.к. id у нас нигде не используются

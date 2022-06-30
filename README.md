@@ -14,7 +14,7 @@ You can view a live demo over at https://ildar-icoosoft.github.io/js-flowchart/
 - Change relations
 - Remove relations (To delete a relation, drag relation to empty space)
 - Add nodes
-- Update nodes text (Work in progress)
+- Update nodes text (Double click on a node)
 - Remove nodes (To delete a node, click on it and press the delete button)
 - Drag nodes
 
