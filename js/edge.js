@@ -30,53 +30,61 @@ export class Edge {
   }
 
   draw() {
-    this.drawLine();
-    this.drawLabel();
-    this.drawArrow();
+    this.drawLine_();
+    this.drawLabel_();
+    this.drawArrow_();
   }
 
   redraw() {
-    this.redrawLine();
-    this.redrawLabel();
-    this.redrawArrow();
+    this.redrawLine_();
+    this.redrawLabel_();
+    this.redrawArrow_();
+  }
+
+  unmount() {
+    this.svgWrapperDom.removeChild(this.lineDom);
+    if (this.labelDom) {
+      this.wrapperDom.removeChild(this.labelDom);
+    }
+    this.svgWrapperDom.removeChild(this.arrowDom);
   }
 
   /**
    * @private
    */
-  drawLine() {
-    this.lineDom = this.createLineDom();
+  drawLine_() {
+    this.lineDom = this.createLineDom_();
     this.svgWrapperDom.append(this.lineDom);
     requestAnimationFrame(() => {
-      this.redrawLine();
+      this.redrawLine_();
     });
   }
 
   /**
    * @private
    */
-  redrawLine() {
-    const path = this.calcPath();
+  redrawLine_() {
+    const path = this.calcPath_();
     this.lineDom.setAttribute('d', path);
   }
 
   /**
    * @private
    */
-  drawLabel() {
+  drawLabel_() {
     if (!this.label) return;
 
-    this.labelDom = this.createLabelDom();
+    this.labelDom = this.createLabelDom_();
     this.wrapperDom.append(this.labelDom);
     requestAnimationFrame(() => {
-      this.redrawLabel();
+      this.redrawLabel_();
     });
   }
 
   /**
    * @private
    */
-  redrawLabel() {
+  redrawLabel_() {
     if (!this.label) return;
 
     const length = this.lineDom.getTotalLength();
@@ -93,18 +101,18 @@ export class Edge {
   /**
    * @private
    */
-  drawArrow() {
-    this.arrowDom = this.createArrowDom();
+  drawArrow_() {
+    this.arrowDom = this.createArrowDom_();
     this.svgWrapperDom.append(this.arrowDom);
     requestAnimationFrame(() => {
-      this.redrawArrow();
+      this.redrawArrow_();
     });
   }
 
   /**
    * @private
    */
-  redrawArrow() {
+  redrawArrow_() {
     const linePath = this.lineDom.getAttribute('d');
 
     const length = this.lineDom.getTotalLength();
@@ -140,7 +148,7 @@ export class Edge {
   /**
    * @private
    */
-  calcPath() {
+  calcPath_() {
     const sourceEndpointCoordinates = this.sourceEndpoint.getEndpointCoordinates();
 
     const targetEndpointCoordinates = this.targetCoordinates ?? this.targetEndpoint.getEndpointCoordinates();
@@ -173,7 +181,7 @@ export class Edge {
    * @private
    * @return {SVGPathElement}
    */
-  createLineDom() {
+  createLineDom_() {
     const el = document.createElementNS('http://www.w3.org/2000/svg', 'path')
     el.classList.add('flowchart-link', this.color);
     return el;
@@ -183,7 +191,7 @@ export class Edge {
    * @private
    * @return {HTMLSpanElement}
    */
-  createLabelDom() {
+  createLabelDom_() {
     const el = document.createElement('span');
     el.className = 'flowchart-label';
     el.innerText = this.label;
@@ -194,17 +202,9 @@ export class Edge {
    * @private
    * @return {SVGPathElement}
    */
-  createArrowDom() {
+  createArrowDom_() {
     const el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     el.classList.add('flowchart-arrow', this.color);
     return el;
-  }
-
-  unmount() {
-    this.svgWrapperDom.removeChild(this.lineDom);
-    if (this.labelDom) {
-      this.wrapperDom.removeChild(this.labelDom);
-    }
-    this.svgWrapperDom.removeChild(this.arrowDom);
   }
 }
