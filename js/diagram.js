@@ -6,20 +6,36 @@ import {createNodeByShape} from "./utils/create-node-by-shape.js";
 export class Diagram {
   constructor(options) {
     this.root = options.root;
-    this.wrapperDom = this.createWrapperDom();
-    this.svgWrapperDom = this.createSvgWrapperDom();
+    this.wrapperDom = this.createWrapperDom_();
+    this.svgWrapperDom = this.createSvgWrapperDom_();
 
-    this.nodes = options.nodes ? options.nodes.map(nodeOptions => this.createNode(nodeOptions)) : [];
-    this.edges = options.edges ? options.edges.map(edgeOptions => this.createEdge(edgeOptions)) : [];
+    this.nodes = options.nodes ? options.nodes.map(nodeOptions => this.createNode_(nodeOptions)) : [];
+    this.edges = options.edges ? options.edges.map(edgeOptions => this.createEdge_(edgeOptions)) : [];
 
     this.selectedNode = null;
     this.movingNode = null;
     this.movingEdge = null;
 
-    this.addEventListeners();
+    this.addEventListeners_();
   }
 
-  addEventListeners() {
+  draw() {
+    this.nodes.forEach(node => {
+      node.draw();
+    });
+
+    this.edges.forEach(edge => {
+      edge.draw();
+    });
+
+    this.wrapperDom.append(this.svgWrapperDom);
+    this.root.append(this.wrapperDom);
+  }
+
+  /**
+   * @private
+   */
+  addEventListeners_() {
     // отключаем возможность выделения текста
     this.wrapperDom.addEventListener('selectstart', (e) => {
       if (!(this.selectedNode && this.selectedNode.edited)) {
@@ -27,18 +43,22 @@ export class Diagram {
       }
     });
 
-    this.addNodesEventHandlers(this.nodes);
+    this.addNodesEventHandlers_(this.nodes);
 
-    this.addSelectNodeEventHandler();
+    this.addSelectNodeEventHandler_();
 
-    this.addDragNodesEventHandlers();
+    this.addDragNodesEventHandlers_();
 
-    this.addDragEdgeEventHandlers();
+    this.addDragEdgeEventHandlers_();
 
-    this.addDragFromPaletteEventHandlers();
+    this.addDragFromPaletteEventHandlers_();
   }
 
-  addNodesEventHandlers(nodes) {
+  /**
+   * @param {Node[]} nodes
+   * @private
+   */
+  addNodesEventHandlers_(nodes) {
     nodes.forEach(node => {
       // при выделении ноды, убираем выделение с ранее выделенной ноды
       node.addEventListener('selectNode', () => {
@@ -124,8 +144,9 @@ export class Diagram {
 
   /**
    * обработка событий перетаскивания элементов из палитры (для добавления новой ноды)
+   * @private
    */
-  addDragFromPaletteEventHandlers() {
+  addDragFromPaletteEventHandlers_() {
     this.wrapperDom.addEventListener('dragover', event => {
       event.preventDefault();
       event.dataTransfer.dropEffect = "move";
@@ -149,7 +170,7 @@ export class Diagram {
 
       this.nodes.push(node);
 
-      this.addNodesEventHandlers([node]);
+      this.addNodesEventHandlers_([node]);
 
       node.draw();
     });
@@ -157,8 +178,9 @@ export class Diagram {
 
   /**
    * обработка событий перемещения ребра
+   * @private
    */
-  addDragEdgeEventHandlers() {
+  addDragEdgeEventHandlers_() {
     // процесс перемещения ребра
     window.addEventListener('mousemove', (event) => {
       if (this.movingEdge) {
@@ -209,8 +231,9 @@ export class Diagram {
 
   /**
    * Обработка событий выделения ноды
+   * @private
    */
-  addSelectNodeEventHandler() {
+  addSelectNodeEventHandler_() {
     // убираем выделение ноды при клике по экрану
     window.addEventListener('mousedown', () => {
       if (this.selectedNode) {
@@ -224,8 +247,9 @@ export class Diagram {
 
   /**
    * обработка событий перемещения ноды
+   * @private
    */
-  addDragNodesEventHandlers() {
+  addDragNodesEventHandlers_() {
     // процесс перемещения ноды
     window.addEventListener('mousemove', (event) => {
       if (!this.movingNode || (this.selectedNode && this.selectedNode.edited)) {
@@ -255,7 +279,12 @@ export class Diagram {
     });
   }
 
-  createEdge(options) {
+  /**
+   * @param options
+   * @return {Edge}
+   * @private
+   */
+  createEdge_(options) {
     const sourceNode = this.nodes.find(item => item.id === options.sourceNode);
     const sourceEndpoint = sourceNode.endpoints.find(item => item.id === options.sourceEndpoint);
 
@@ -273,31 +302,23 @@ export class Diagram {
     });
   }
 
-  createNode(options) {
+  /**
+   * @param options
+   * @return {Node}
+   * @private
+   */
+  createNode_(options) {
     return new Node({
       ...options,
       wrapperDom: this.wrapperDom,
     });
   }
 
-  draw() {
-    this.nodes.forEach(node => {
-      node.draw();
-    });
-
-    this.edges.forEach(edge => {
-      edge.draw();
-    });
-
-    this.wrapperDom.append(this.svgWrapperDom);
-    this.root.append(this.wrapperDom);
-  }
-
   /**
    * @private
    * @return {HTMLDivElement}
    */
-  createWrapperDom() {
+  createWrapperDom_() {
     const el = document.createElement('div');
     el.classList.add('flowchart');
     return el;
@@ -307,7 +328,7 @@ export class Diagram {
    * @private
    * @return {SVGSVGElement}
    */
-  createSvgWrapperDom() {
+  createSvgWrapperDom_() {
     const el = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     el.classList.add('flowchart-svg');
     el.setAttribute('version', '1.1')

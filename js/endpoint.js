@@ -19,28 +19,9 @@ export class Endpoint extends EventTarget {
     this.dom = null;
   }
 
-  addEventListeners() {
-    this.dom.addEventListener('mousedown', (event) => {
-      if (event.button !== 0) {
-        return;
-      }
-      event.stopPropagation();
-
-      this.dispatchEvent(new CustomEvent('mousedown', {detail: {originEvent: event}}));
-    })
-  }
-
-  createDom() {
-    const el = document.createElement('div');
-    el.classList.add('flowchart-circle-endpoint', this.node.color);
-    el.setAttribute('id', `${this.node.id}-${this.id}`);
-
-    return el;
-  }
-
   draw(shouldRedraw) {
-    this.dom = this.createDom();
-    this.addEventListeners();
+    this.dom = this.createDom_();
+    this.addEventListeners_();
     this.wrapperDom.append(this.dom);
     if (shouldRedraw) {
       requestAnimationFrame(() => {
@@ -86,5 +67,30 @@ export class Endpoint extends EventTarget {
 
   unmount() {
     this.wrapperDom.removeChild(this.dom);
+  }
+
+  /**
+   * @private
+   */
+  addEventListeners_() {
+    this.dom.addEventListener('mousedown', (event) => {
+      if (event.button !== 0) {
+        return;
+      }
+      event.stopPropagation();
+
+      this.dispatchEvent(new CustomEvent('mousedown', {detail: {originEvent: event}}));
+    })
+  }
+
+  /**
+   * @private
+   */
+  createDom_() {
+    const el = document.createElement('div');
+    el.classList.add('flowchart-circle-endpoint', this.node.color);
+    el.setAttribute('id', `${this.node.id}-${this.id}`);
+
+    return el;
   }
 }

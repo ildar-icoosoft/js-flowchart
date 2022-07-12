@@ -32,36 +32,10 @@ export class Node extends EventTarget {
     this.edited = false
   }
 
-  createDom() {
-    const element = document.createElement('div');
-    element.classList.add('flowchart-node');
-    element.setAttribute('id', this.id);
-
-    if (this.fromPalette) {
-      element.setAttribute('draggable', 'true');
-    }
-
-    element.classList.add(this.shape);
-
-    element.classList.add(this.color);
-    element.classList.add(this.border);
-
-    const textSpan = document.createElement('span');
-    textSpan.classList.add('text');
-    if (this.shape === 'diamond') {
-      textSpan.classList.add('rotate');
-    }
-    this.textDom = textSpan;
-
-    element.append(textSpan);
-
-    return element;
-  }
-
   draw() {
-    this.dom = this.createDom();
+    this.dom = this.createDom_();
 
-    this.addEventListeners();
+    this.addEventListeners_();
 
     this.wrapperDom.append(this.dom);
 
@@ -119,11 +93,51 @@ export class Node extends EventTarget {
     }
   }
 
+  unmount() {
+    this.wrapperDom.removeChild(this.dom);
+    this.endpoints.forEach(endpoint => {
+      endpoint.unmount();
+    })
+    this.dispatchEvent(new Event('unmount'));
+
+    this.removeEventListeners_();
+  }
+
   /**
-   *
+   * @return {HTMLDivElement}
+   * @private
+   */
+  createDom_() {
+    const element = document.createElement('div');
+    element.classList.add('flowchart-node');
+    element.setAttribute('id', this.id);
+
+    if (this.fromPalette) {
+      element.setAttribute('draggable', 'true');
+    }
+
+    element.classList.add(this.shape);
+
+    element.classList.add(this.color);
+    element.classList.add(this.border);
+
+    const textSpan = document.createElement('span');
+    textSpan.classList.add('text');
+    if (this.shape === 'diamond') {
+      textSpan.classList.add('rotate');
+    }
+    this.textDom = textSpan;
+
+    element.append(textSpan);
+
+    return element;
+  }
+
+  /**
+   * @private
    * @param {KeyboardEvent} event
    */
-  handleKeyDown = (event) => {
+  handleKeyDown_ = (event) => {
     if (event.code === 'Delete' && this.selected && !this.edited) {
       this.unmount();
     }
@@ -132,7 +146,7 @@ export class Node extends EventTarget {
   /**
    * @private
    */
-  addEventListeners() {
+  addEventListeners_() {
     // При изменении текста в contenteditable элементе сохраняем текст в модель ноды
     this.textDom.addEventListener('input', event => {
       this.text = event.currentTarget.innerText;
@@ -167,23 +181,13 @@ export class Node extends EventTarget {
       });
     }
 
-    window.addEventListener('keydown', this.handleKeyDown);
+    window.addEventListener('keydown', this.handleKeyDown_);
   }
 
   /**
    * @private
    */
-  removeEventListeners() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-  }
-
-  unmount() {
-    this.wrapperDom.removeChild(this.dom);
-    this.endpoints.forEach(endpoint => {
-      endpoint.unmount();
-    })
-    this.dispatchEvent(new Event('unmount'));
-
-    this.removeEventListeners();
+  removeEventListeners_() {
+    window.removeEventListener('keydown', this.handleKeyDown_);
   }
 }

@@ -3,15 +3,28 @@ import {Node} from "./node.js";
 export class Palette {
   constructor(options) {
     this.root = options.root;
-    this.wrapperDom = this.createWrapperDom();
+    this.wrapperDom = this.createWrapperDom_();
 
-    this.nodes = options.nodes ? options.nodes.map(nodeOptions => this.createNode(nodeOptions)) : [];
+    this.nodes = options.nodes ? options.nodes.map(nodeOptions => this.createNode_(nodeOptions)) : [];
 
     // отключаем возможность выделения текста
     this.wrapperDom.addEventListener('selectstart', (e) => e.preventDefault());
   }
 
-  createNode(options) {
+  draw() {
+    this.nodes.forEach(node => {
+      node.draw();
+    });
+
+    this.root.append(this.wrapperDom);
+  }
+
+  /**
+   * @param options
+   * @return {Node}
+   * @private
+   */
+  createNode_(options) {
     return new Node({
       ...options,
       wrapperDom: this.wrapperDom,
@@ -22,17 +35,9 @@ export class Palette {
    * @private
    * @return {HTMLDivElement}
    */
-  createWrapperDom() {
+  createWrapperDom_() {
     const el = document.createElement('div');
     el.classList.add('palette');
     return el;
-  }
-
-  draw() {
-    this.nodes.forEach(node => {
-      node.draw();
-    });
-
-    this.root.append(this.wrapperDom);
   }
 }
