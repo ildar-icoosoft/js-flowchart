@@ -6,9 +6,6 @@ export class Palette {
     this.wrapperDom = this.createWrapperDom_();
 
     this.nodes = options.nodes ? options.nodes.map(nodeOptions => this.createNode_(nodeOptions)) : [];
-
-    // отключаем возможность выделения текста
-    this.wrapperDom.addEventListener('selectstart', (e) => e.preventDefault());
   }
 
   draw() {
