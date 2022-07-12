@@ -36,13 +36,6 @@ export class Diagram {
    * @private
    */
   addEventListeners_() {
-    // отключаем возможность выделения текста
-    this.wrapperDom.addEventListener('selectstart', (e) => {
-      if (!(this.selectedNode && this.selectedNode.edited)) {
-        e.preventDefault()
-      }
-    });
-
     this.addNodesEventHandlers_(this.nodes);
 
     this.addSelectNodeEventHandler_();

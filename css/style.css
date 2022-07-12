@@ -52,6 +52,9 @@ table {
 html, body {
   height: 100%;
 }
+body {
+  user-select: none;
+}
 
 .container {
   display: flex;
